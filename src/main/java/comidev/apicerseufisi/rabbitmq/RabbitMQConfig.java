@@ -43,8 +43,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(
-            ConnectionFactory factory, MessageConverter messageConverter) {
+    public RabbitTemplate rabbitTemplate(ConnectionFactory factory,
+            MessageConverter messageConverter) {
 
         RabbitTemplate rabbitTemplate = new RabbitTemplate(factory);
         rabbitTemplate.setMessageConverter(messageConverter);

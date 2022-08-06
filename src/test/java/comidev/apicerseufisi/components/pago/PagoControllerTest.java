@@ -85,6 +85,7 @@ public class PagoControllerTest {
 
         // Afirmar
         response.isStatus(HttpStatus.OK);
+        System.out.println("\n"+response.bodyString());
     }
 
     // * GET ->
@@ -126,6 +127,7 @@ public class PagoControllerTest {
 
         // Afirmar
         response.isStatus(HttpStatus.OK);
+        System.out.println("\n"+response.bodyString());
     }
 
     // * GET ->

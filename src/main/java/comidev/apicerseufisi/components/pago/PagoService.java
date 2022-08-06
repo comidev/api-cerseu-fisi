@@ -7,11 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import comidev.apicerseufisi.components.alumno.Alumno;
 import comidev.apicerseufisi.components.curso.Curso;
 import comidev.apicerseufisi.components.curso.response.CursoDetails;
 import comidev.apicerseufisi.components.curso.utils.CursoCodigo;
 import comidev.apicerseufisi.components.curso.utils.CursoEstado;
-import comidev.apicerseufisi.components.horario.Horario;
 import comidev.apicerseufisi.components.horario.HorarioService;
 import comidev.apicerseufisi.components.horario.response.HorarioByAlumno;
 import comidev.apicerseufisi.components.pago.request.PagosCreate;
@@ -57,13 +57,9 @@ public class PagoService {
 
     // ! CUS 06: Consultar cantidad de alumnos
     public List<CursoDetails> getCursosPedidos() {
-        List<CursoDetails> cursos = pagoRepo.findByPagoEstado(PagoEstado.CREADO).stream()
-                .map(Pago::getCursoCodigo)
-                .distinct()
-                .map(horarioService::findCursoByCodigo)
+        return pagoRepo.findCursoForPagoEstado(PagoEstado.CREADO).stream()
                 .map(CursoDetails::new)
                 .toList();
-        return cursos;
     }
 
     public Matriculados getMatriculadosByCurso(String cursoCodigo) {
@@ -85,12 +81,8 @@ public class PagoService {
     }
 
     public List<HorarioByAlumno> getHorariosByAlumno(Long alumnoId) {
-        return solicitudService.findSolicitudAllByAlumno(alumnoId).stream()
-                .map(this::findBySolicitudAndPagoACTIVO)
-                .flatMap(List<Pago>::stream)
-                .map(Pago::getCursoCodigo)
-                .map(horarioService::findHorariosByCodigoCurso)
-                .flatMap(List<Horario>::stream)
+        return pagoRepo.findByAlumnoAndEstado(new Alumno(alumnoId),
+                PagoEstado.ACTIVADO).stream()
                 .map(HorarioByAlumno::new)
                 .toList();
     }
@@ -136,4 +128,3 @@ public class PagoService {
         horarioService.terminarMatricula();
     }
 }
-                

@@ -168,5 +168,6 @@ public class HorarioControllerTest {
         response.isStatus(HttpStatus.OK);
         String bodyRes = response.bodyString();
         assertTrue(bodyRes.contains(horario.getId().toString()));
+        System.out.println("\n"+bodyRes);
     }
 }

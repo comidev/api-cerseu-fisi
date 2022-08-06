@@ -13,4 +13,6 @@ public interface CursoRepo extends JpaRepository<Curso, Long> {
     Optional<Curso> findByCodigo(String codigo);
 
     List<Curso> findByCursoEstado(CursoEstado cursoEstado);
+
+    
 }

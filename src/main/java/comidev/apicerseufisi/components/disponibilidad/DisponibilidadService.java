@@ -91,6 +91,7 @@ public class DisponibilidadService {
         return disponibilidadRepo.findByCurso(findCursoByCodigo(codigo));
     }
 
+    // ? Se encarga de traer un curso por su codigo
     public Curso findCursoByCodigo(String codigo) {
         return cursoService.findCursoByCodigo(codigo);
     }
@@ -99,10 +100,12 @@ public class DisponibilidadService {
         cursoService.verificarEstado(curso, size);
     }
 
+    // ? Se encarga de traer un curso por su codigo
     public CursoCodigo getCursoCodigos() {
         return cursoService.getCursoCodigos();
     }
 
+    // ? Se encarga de traer un curso por su codigo
     public void terminarMatricula() {
         cursoService.terminarMatricula();
     }

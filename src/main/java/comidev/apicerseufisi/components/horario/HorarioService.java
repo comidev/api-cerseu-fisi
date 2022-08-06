@@ -3,7 +3,6 @@ package comidev.apicerseufisi.components.horario;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import comidev.apicerseufisi.components.curso.utils.CursoCodigo;
 import comidev.apicerseufisi.components.curso.utils.CursoEstado;
 import comidev.apicerseufisi.components.disponibilidad.Disponibilidad;
 import comidev.apicerseufisi.components.disponibilidad.DisponibilidadService;
+import comidev.apicerseufisi.components.docente.Docente;
 import comidev.apicerseufisi.components.fecha.Fecha;
 import comidev.apicerseufisi.components.horario.request.HorarioCreate;
 import comidev.apicerseufisi.components.horario.response.HorarioDetails;
@@ -72,41 +72,16 @@ public class HorarioService {
     }
 
     public CursoCodigo iniciarMatriculacion() {
-        // * Activamos en funcion de si esta Validado :D!
-        List<Horario> horariosActivados = horarioRepo
-                .findByHorarioEstado(HorarioEstado.VALIDADO).stream()
-                .map(item -> {
-                    item.setHorarioEstado(HorarioEstado.ACTIVADO);
-                    return item;
-                })
-                .collect(Collectors.toList());
-        List<Horario> horariosObservados = horarioRepo.findByHorarioEstado(
-                HorarioEstado.OBSERVADO);
-        List<Horario> horariosCreados = horarioRepo.findByHorarioEstado(
-                HorarioEstado.CREADO);
-        // * Concatenamos las listas rechazadas
-        horariosObservados.addAll(horariosCreados);
-        List<Horario> horariosNoActivados = horariosObservados.stream()
-                .map(item -> {
-                    item.setHorarioEstado(HorarioEstado.RECHAZADO);
-                    return item;
-                })
-                .toList();
-        // * Concatenamos todas las listas y actualizamos :D
-        horariosActivados.addAll(horariosNoActivados);
-        horarioRepo.saveAll(horariosActivados);
+        // * Activamos los válidos y rechazamos los inválidos
+        horarioRepo.updateEstadoFor(HorarioEstado.ACTIVADO, HorarioEstado.VALIDADO);
+        // * Rechazamos los inválidos
+        horarioRepo.updateEstadoFor(HorarioEstado.RECHAZADO, HorarioEstado.OBSERVADO);
+        horarioRepo.updateEstadoFor(HorarioEstado.RECHAZADO, HorarioEstado.CREADO);
         return disponibilidadService.getCursoCodigos();
     }
 
     public void terminarMatricula() {
-        List<Horario> horariosConcluidos = horarioRepo
-                .findByHorarioEstado(HorarioEstado.ACTIVADO).stream()
-                .map(item -> {
-                    item.setHorarioEstado(HorarioEstado.CONCLUIDO);
-                    return item;
-                })
-                .toList();
-        horarioRepo.saveAll(horariosConcluidos);
+        horarioRepo.updateEstadoFor(HorarioEstado.ACTIVADO, HorarioEstado.CONCLUIDO);
         disponibilidadService.terminarMatricula();
     }
 
@@ -160,9 +135,6 @@ public class HorarioService {
             String message = "No se puede volver a 'crearlo'";
             throw new HttpException(HttpStatus.BAD_REQUEST, message);
         }
-        if (horarioEstado.equals(HorarioEstado.OBSERVADO)) {
-            // ? Mandar notificaciones a secretaria (?) Email RabbitMQ
-        }
         if (horarioEstado.equals(HorarioEstado.VALIDADO)) {
             if (horarioDB.getAula() == null) {
                 String message = "No tiene aula asignada :v";
@@ -189,24 +161,14 @@ public class HorarioService {
     }
 
     public List<HorarioDetails> getHorariosByDocente(Long docenteId) {
-        return findHorariosByDocente(docenteId).stream()
+        return findByDocenteForEstadoACTIVADO(docenteId).stream()
                 .map(HorarioDetails::new)
                 .toList();
     }
 
-    // ? JOIN ?
-    private List<Horario> findHorariosByDocente(Long docenteId) {
-        return disponibilidadService.findByDocente(docenteId).stream()
-                .map(this::findByDisponibilidadAndHorarioACTIVO)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
-    }
-
-    private Optional<Horario> findByDisponibilidadAndHorarioACTIVO(
-            Disponibilidad disponibilidad) {
-        return horarioRepo.findByDisponibilidadAndHorarioEstado(
-                disponibilidad, HorarioEstado.ACTIVADO);
+    private List<Horario> findByDocenteForEstadoACTIVADO(Long docenteId) {
+        return horarioRepo.findByDocenteForEstado(
+                new Docente(docenteId), HorarioEstado.ACTIVADO);
     }
 
     public Curso findCursoByCodigo(String codigo) {
