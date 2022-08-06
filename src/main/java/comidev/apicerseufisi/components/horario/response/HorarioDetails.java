@@ -1,6 +1,6 @@
 package comidev.apicerseufisi.components.horario.response;
 
-import java.time.LocalTime;
+import java.sql.Time;
 
 import comidev.apicerseufisi.components.aula.Aula;
 import comidev.apicerseufisi.components.disponibilidad.Disponibilidad;
@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HorarioDetails {
     private Long id;
-    private LocalTime inicio;
-    private LocalTime fin;
+    private Time inicio;
+    private Time fin;
     private Dia dia;
     private Long docenteId;
     private Long cursoId;
@@ -22,8 +22,8 @@ public class HorarioDetails {
 
     public HorarioDetails(Horario horario) {
         this.id = horario.getId();
-        this.inicio = horario.getInicio();
-        this.fin = horario.getFin();
+        this.inicio = Time.valueOf(horario.getInicio());
+        this.fin = Time.valueOf(horario.getFin());
         this.dia = horario.getDia();
         Disponibilidad disponibilidad = horario.getDisponibilidad();
         this.docenteId = disponibilidad.getDocente().getId();

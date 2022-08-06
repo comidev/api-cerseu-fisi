@@ -8,11 +8,13 @@ import org.hibernate.validator.constraints.Length;
 
 import comidev.apicerseufisi.components.usuario.utils.Rol;
 import comidev.apicerseufisi.components.usuario.utils.Sexo;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class UsuarioCreate {
-    @NotEmpty(message = "No puede ser vacio")
+    //@NotEmpty(message = "No puede ser vacio")
     private String codigo;
 
     @NotEmpty(message = "No puede ser vacio")

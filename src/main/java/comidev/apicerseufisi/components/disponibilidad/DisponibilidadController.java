@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import comidev.apicerseufisi.components.disponibilidad.request.DisponibilidadUpd
 import comidev.apicerseufisi.components.disponibilidad.response.DisponibilidadDetails;
 import comidev.apicerseufisi.components.disponibilidad.response.DisponibilidadListByDocente;
 import comidev.apicerseufisi.exceptions.Validator;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -30,6 +32,7 @@ import lombok.AllArgsConstructor;
 public class DisponibilidadController {
     private final DisponibilidadService disponibilidadService;
 
+    @Operation(summary = "Registra la disponibilidad del docente con un curso", description = "En función de un docente y un curso se guarda su disponibilidad")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -40,6 +43,7 @@ public class DisponibilidadController {
         disponibilidadService.saveDisponibilidad(disponibilidadCreate);
     }
 
+    @Operation(summary = "Actualiza la disponibilidad del docente con un curso", description = "En función de un docente y un curso se actualiza su disponibilidad")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -50,9 +54,9 @@ public class DisponibilidadController {
             BindingResult bindingResult) {
         Validator.checkValidBody(bindingResult);
         disponibilidadService.updateDisponibilidad(docenteId, cursoId, update);
-
     }
 
+    @Operation(summary = "Elimina la disponibilidad del docente con un curso", description = "En función de un docente y un curso se elimina su disponibilidad")
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -62,6 +66,7 @@ public class DisponibilidadController {
         disponibilidadService.deleteDisponibilidad(docenteId, cursoId);
     }
 
+    @Operation(summary = "Devuelve la disponibilidad del docente con un curso", description = "En función de un docente y un curso devuelve la disponibilidad")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -71,10 +76,11 @@ public class DisponibilidadController {
         return disponibilidadService.getByDocenteAndCurso(docenteId, cursoId);
     }
 
+    @Operation(summary = "Devuelve la disponibilidades del docente", description = "En función de un docente devuelve las disponibilidades")
     @GetMapping("/docente/{docenteId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<DisponibilidadListByDocente> getByDocente(Long docenteId) {
+    public List<DisponibilidadListByDocente> getByDocente(@PathVariable Long docenteId) {
         return disponibilidadService.getByDocente(docenteId);
     }
 }

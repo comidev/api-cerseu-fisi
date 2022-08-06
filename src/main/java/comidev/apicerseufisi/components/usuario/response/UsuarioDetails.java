@@ -1,6 +1,6 @@
 package comidev.apicerseufisi.components.usuario.response;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -10,9 +10,11 @@ import comidev.apicerseufisi.components.usuario.utils.Rol;
 import comidev.apicerseufisi.components.usuario.utils.Sexo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class UsuarioDetails {
     @JsonInclude(Include.NON_NULL)
     private Long id;
@@ -27,11 +29,12 @@ public class UsuarioDetails {
     private String correo;
     private Rol rol;
     private Boolean activado;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     public UsuarioDetails(Long id, Usuario usuario) {
         this.id = id;
+        this.usuarioId = usuario.getId();
         this.codigo = usuario.getCodigo();
         this.nombre = usuario.getNombre();
         this.apellido = usuario.getApellido();
@@ -39,8 +42,9 @@ public class UsuarioDetails {
         this.telefono = usuario.getTelefono();
         this.sexo = usuario.getSexo();
         this.correo = usuario.getCorreo();
+        this.rol = usuario.getRol();
         this.activado = usuario.getActivado();
-        this.createdAt = usuario.getCreatedAt();
-        this.updatedAt = usuario.getUpdatedAt();
+        this.createdAt = Timestamp.valueOf(usuario.getCreatedAt());
+        this.updatedAt = Timestamp.valueOf(usuario.getUpdatedAt());
     }
 }

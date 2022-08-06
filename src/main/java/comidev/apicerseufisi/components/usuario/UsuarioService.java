@@ -26,27 +26,29 @@ import comidev.apicerseufisi.exceptions.HttpException;
 @AllArgsConstructor
 public class UsuarioService implements UserDetailsService {
     private final UsuarioRepo usuarioRepo;
-    public final BCryptPasswordEncoder bcrypt;
     private final AlumnoService alumnoService;
     private final DocenteService docenteService;
+    public final BCryptPasswordEncoder bcrypt;
 
     public List<UsuarioList> getAll(Rol rol) {
         if (rol != null) {
             // * ¿alumno o docente?
             if (rol.equals(Rol.ALUMNO)) {
                 return alumnoService.findAll().stream()
-                        .map(item -> new UsuarioList(item.getId(), item.getUsuario()))
+                        .map(UsuarioList::new)
                         .toList();
             }
             if (rol.equals(Rol.DOCENTE)) {
                 return docenteService.findAll().stream()
-                        .map(item -> new UsuarioList(item.getId(), item.getUsuario()))
+                        .map(UsuarioList::new)
                         .toList();
             }
-            throwErrorRol();
+            return usuarioRepo.findByRol(rol).stream()
+                    .map(UsuarioList::new)
+                    .toList();
         }
         return usuarioRepo.findAll().stream()
-                .map(item -> new UsuarioList(null, item))
+                .map(UsuarioList::new)
                 .toList();
     }
 
@@ -60,13 +62,8 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = new Usuario(usuarioCreate);
         usuario.setPassword(bcrypt.encode(usuarioCreate.getPassword()));
 
-        Usuario usuarioDB;
-        try {
-            usuarioDB = usuarioRepo.save(usuario);
-        } catch (Exception e) {
-            String message = e.getMessage() + "  |--| " + e.getLocalizedMessage();
-            throw new HttpException(HttpStatus.CONFLICT, message);
-        }
+        Usuario usuarioDB = usuarioRepo.save(usuario);
+
         Rol rol = usuarioCreate.getRol();
         // * Guardamos alumno o docente
         if (rol.equals(Rol.ALUMNO)) {
@@ -84,7 +81,6 @@ public class UsuarioService implements UserDetailsService {
         usuarioDB.update(usuarioUpdate);
         usuarioDB.setPassword(bcrypt.encode(usuarioUpdate.getNuevoPassword()));
         usuarioRepo.save(usuarioDB);
-
     }
 
     public void eliminarUsuario(String password, Long id, Rol rol) {
@@ -98,7 +94,8 @@ public class UsuarioService implements UserDetailsService {
             // * ¿alumno o docente?
             if (rol.equals(Rol.ALUMNO)) {
                 return alumnoService.findById(id).getUsuario();
-            } else if (rol.equals(Rol.DOCENTE)) {
+            }
+            if (rol.equals(Rol.DOCENTE)) {
                 return docenteService.findById(id).getUsuario();
             }
             throwErrorRol();
@@ -108,8 +105,8 @@ public class UsuarioService implements UserDetailsService {
 
     private void throwErrorRol() {
         String message = "Si usa 'rol' solo está permitido 'ALUMNO' y 'DOCENTE',"
-                + " al usar el 'rol' el id hace referencia a la entidad de 'rol';"
-                + " si no lo usa, hará referencia al usuario."
+                + " al usar el 'rol' el id hace referencia a la entidad de ese 'rol';"
+                + " si no lo usa, hará referencia al Usuario."
                 + " El 'rol' no es obligatorio :D";
         throw new HttpException(HttpStatus.BAD_REQUEST, message);
     }

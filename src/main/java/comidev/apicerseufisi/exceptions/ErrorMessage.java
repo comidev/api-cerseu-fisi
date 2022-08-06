@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.exceptions;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +16,7 @@ public class ErrorMessage {
     private String message;
     private String method;
     private String path;
-    private String timestamp;
+    private Timestamp timestamp;
 
     public ErrorMessage(HttpStatus status, String message, HttpServletRequest request) {
         this.error = status.getReasonPhrase().toUpperCase();
@@ -23,8 +24,6 @@ public class ErrorMessage {
         this.message = message;
         this.method = request.getMethod();
         this.path = request.getRequestURI();
-        this.timestamp = LocalDateTime.now()
-                .toString()
-                .replace("T", " ");
+        this.timestamp = Timestamp.from(Instant.now());
     }
 }

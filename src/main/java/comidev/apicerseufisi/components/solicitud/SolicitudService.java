@@ -10,6 +10,7 @@ import comidev.apicerseufisi.components.alumno.Alumno;
 import comidev.apicerseufisi.components.alumno.AlumnoService;
 import comidev.apicerseufisi.components.solicitud.request.SolicitudCreate;
 import comidev.apicerseufisi.components.solicitud.response.SolicitudByAlumno;
+import comidev.apicerseufisi.components.solicitud.response.SolicitudList;
 
 @Service
 @AllArgsConstructor
@@ -23,13 +24,14 @@ public class SolicitudService {
         return solicitudRepo.save(new Solicitud(alumnoDB, solicitud.getCodigo()));
     }
 
-    public List<SolicitudByAlumno> getAllOrByAlumno(Long alumnoId) {
-        if (alumnoId != null) {
-            return this.findSolicitudAllByAlumno(alumnoId).stream()
-                    .map(SolicitudByAlumno::new)
-                    .toList();
-        }
+    public List<SolicitudList> getAll() {
         return solicitudRepo.findAll().stream()
+                .map(SolicitudList::new)
+                .toList();
+    }
+
+    public List<SolicitudByAlumno> getAllByAlumno(Long alumnoId) {
+        return this.findSolicitudAllByAlumno(alumnoId).stream()
                 .map(SolicitudByAlumno::new)
                 .toList();
     }

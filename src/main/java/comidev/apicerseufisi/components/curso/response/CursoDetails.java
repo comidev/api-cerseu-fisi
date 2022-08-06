@@ -1,6 +1,6 @@
 package comidev.apicerseufisi.components.curso.response;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import comidev.apicerseufisi.components.curso.Curso;
 import comidev.apicerseufisi.components.curso.utils.CursoEstado;
@@ -17,8 +17,8 @@ public class CursoDetails {
     private Integer planDeEstudio;
     private Integer creditos;
     private CursoEstado cursoEstado;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     public CursoDetails(Curso entity) {
         this.id = entity.getId();
@@ -28,7 +28,7 @@ public class CursoDetails {
         this.planDeEstudio = entity.getPlanDeEstudio();
         this.creditos = entity.getCreditos();
         this.cursoEstado = entity.getCursoEstado();
-        this.createdAt = entity.getCreatedAt();
-        this.updatedAt = entity.getUpdatedAt();
+        this.createdAt = Timestamp.valueOf(entity.getCreatedAt());
+        this.updatedAt = Timestamp.valueOf(entity.getUpdatedAt());
     }
 }

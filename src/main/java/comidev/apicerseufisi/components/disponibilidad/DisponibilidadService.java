@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.components.disponibilidad;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,8 @@ public class DisponibilidadService {
             DisponibilidadUpdate update) {
         Disponibilidad disponibilidadDB = this.findByDocenteAndCurso(docenteId, cursoId);
         List<Fecha> fechas = update.getFechas().stream()
-                .map(Fecha::new).toList();
+                .map(Fecha::new)
+                .collect(Collectors.toList());
         disponibilidadDB.setFechas(fechas);
         disponibilidadRepo.save(disponibilidadDB);
     }

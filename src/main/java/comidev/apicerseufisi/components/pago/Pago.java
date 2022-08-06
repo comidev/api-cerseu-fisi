@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import comidev.apicerseufisi.components.horario.Horario;
+import comidev.apicerseufisi.components.pago.request.PagoCreate;
 import comidev.apicerseufisi.components.pago.utils.PagoEstado;
 import comidev.apicerseufisi.components.solicitud.Solicitud;
 import lombok.Getter;
@@ -37,8 +38,9 @@ public class Pago {
     @Enumerated(EnumType.STRING)
     private PagoEstado pagoEstado;
 
-    public Pago(Float monto, Solicitud solicitud) {
-        this.monto = monto;
+    public Pago(PagoCreate dto, Solicitud solicitud) {
+        this.monto = dto.getMonto();
+        this.cursoCodigo = dto.getCursoCodigo();
         this.solicitud = solicitud;
         this.pagoEstado = PagoEstado.CREADO;
     }

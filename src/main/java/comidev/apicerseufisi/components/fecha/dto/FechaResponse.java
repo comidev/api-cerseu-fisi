@@ -1,6 +1,6 @@
 package comidev.apicerseufisi.components.fecha.dto;
 
-import java.time.LocalTime;
+import java.sql.Time;
 
 import comidev.apicerseufisi.components.fecha.Fecha;
 import comidev.apicerseufisi.utils.Dia;
@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FechaResponse {
     private Dia dia;
-    private LocalTime inicio;
-    private LocalTime fin;
+    private Time inicio;
+    private Time fin;
 
     public FechaResponse(Fecha fecha) {
         this.dia = fecha.getDia();
-        this.inicio = fecha.getInicio();
-        this.fin = fecha.getFin();
+        this.inicio = Time.valueOf(fecha.getInicio());
+        this.fin = Time.valueOf(fecha.getFin());
     }
 }

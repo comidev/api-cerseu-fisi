@@ -3,6 +3,8 @@ package comidev.apicerseufisi.components.usuario.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import comidev.apicerseufisi.components.alumno.Alumno;
+import comidev.apicerseufisi.components.docente.Docente;
 import comidev.apicerseufisi.components.usuario.Usuario;
 import comidev.apicerseufisi.components.usuario.utils.Rol;
 import lombok.Getter;
@@ -22,12 +24,27 @@ public class UsuarioList {
     private String correo;
     private Rol rol;
 
-    public UsuarioList(Long id, Usuario usuario) {
-        this.id = id;
+    public UsuarioList(Docente docente) {
+        this.id = docente.getId();
+        initUsuario(docente.getUsuario());
+    }
+
+    public UsuarioList(Alumno alumno) {
+        this.id = alumno.getId();
+        initUsuario(alumno.getUsuario());
+    }
+
+    public UsuarioList(Usuario usuario) {
+        initUsuario(usuario);
+    }
+
+    private void initUsuario(Usuario usuario) {
+        this.usuarioId = usuario.getId();
         this.codigo = usuario.getCodigo();
         this.nombre = usuario.getNombre();
         this.apellido = usuario.getApellido();
         this.telefono = usuario.getTelefono();
         this.correo = usuario.getCorreo();
+        this.rol = usuario.getRol();
     }
 }

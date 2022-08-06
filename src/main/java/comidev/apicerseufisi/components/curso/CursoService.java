@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.components.curso;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class CursoService {
                     item.setCursoEstado(CursoEstado.APERTURADO);
                     return item;
                 })
-                .toList();
+                .collect(Collectors.toList());
         List<Curso> noAperturados = cursoRepo
                 .findByCursoEstado(CursoEstado.NO_APTO).stream()
                 .map(item -> {

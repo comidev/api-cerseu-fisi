@@ -17,10 +17,8 @@ public class HandleException {
     // * Error del Cliente
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<ErrorMessage> generalError(HttpServletRequest request, HttpException exception) {
-        ErrorMessage body = new ErrorMessage(
-                exception.getStatus(),
-                exception.getMessage(),
-                request);
+        ErrorMessage body = new ErrorMessage(exception.getStatus(),
+        exception.getMessage(),request);
         return ResponseEntity.status(body.getStatus()).body(body);
     }
 
@@ -48,6 +46,11 @@ public class HandleException {
             }
         } else if (UNAUTHORIZED.contains(exceptionType)) {
             status = HttpStatus.UNAUTHORIZED;
+        } else if (CONFLICT.contains(exceptionType)) {
+            status = HttpStatus.CONFLICT;
+            if ("DataIntegrityViolationException".equals(exceptionType)) {
+                message = errorUniqueColumn(message);
+            }
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             exception.printStackTrace();
@@ -103,6 +106,14 @@ public class HandleException {
         }
         return message;
     }
+
+    private static String errorUniqueColumn(String message) {
+        String field = message.split("\\(")[1].split(" ")[0];
+        return "El campo '" + field + "' ya existe y éste debe ser único :D!";
+    }
+
+    private static final List<String> CONFLICT = List.of(
+            "DataIntegrityViolationException");
 
     private static final List<String> BAD_REQUEST = List.of(
             "DuplicateKeyException",

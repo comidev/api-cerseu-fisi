@@ -2,12 +2,18 @@ package comidev.apicerseufisi.components.usuario.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
 
 import comidev.apicerseufisi.components.usuario.utils.Sexo;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UsuarioUpdate {
     @NotEmpty(message = "No puede ser vacio")
     private String codigo;
@@ -24,7 +30,7 @@ public class UsuarioUpdate {
     @Length(min = 9, max = 9, message = "Debe tener 9 cifras")
     private String telefono;
 
-    @NotEmpty(message = "No puede ser vacio")
+    @NotNull(message = "No puede ser vacio")
     private Sexo sexo;
 
     @NotEmpty(message = "No puede ser vacio")

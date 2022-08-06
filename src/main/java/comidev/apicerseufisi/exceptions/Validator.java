@@ -23,13 +23,13 @@ public class Validator {
     }
 
     private static String errorBody(FieldError e) {
-        return "\"" + e.getField() + "\": \"" + e.getDefaultMessage() + "\"";
+        return "'" + e.getField() + "' : '" + e.getDefaultMessage() + "'";
     }
 
     public static LocalTime checkValidTime(String text) {
         // Hora (hora:minuto) -> 13:14
         String formato = "HH:mm";
-        String message = "'" + text + "' debe ser '" + formato
+        String message = "Mal formato -> '" + text + "' debe ser '" + formato
                 + "', donde: 00<=HH<=23 y 00<=mm<=59";
         if (text.length() != formato.length()
                 || text.split(":").length != 2) {
@@ -45,7 +45,7 @@ public class Validator {
     public static LocalDate checkValidDate(String text) {
         // Fecha (año-mes-dia) -> 2022-08-03
         String formato = "aaaa-MM-dd";
-        String message = "'" + text + "' debe ser '" + formato
+        String message = "Mal formato -> '" + text + "' debe ser '" + formato
                 + "', donde: 0000<=aaaa<=9999, 00<=MM<=12 y 00<=dd<=31";
         if (text.length() != formato.length()
                 || text.split("-").length != 3) {
@@ -61,7 +61,7 @@ public class Validator {
     public static LocalDateTime checkValidDateTime(String text) {
         // Fecha y hora (fecha hora) -> 2022-08-03 13:14
         String formato = "aaaa-MM-dd HH:mm";
-        String message = "'" + text + "' debe ser '" + formato
+        String message = "Mal formato -> '" + text + "' debe ser '" + formato
                 + "', donde: 0000<=aaaa<=9999, 00<=MM<=12, 00<=dd<=31,"
                 + " 00<=HH<=23 y 00<=mm<=59";
         if (text.length() != formato.length()

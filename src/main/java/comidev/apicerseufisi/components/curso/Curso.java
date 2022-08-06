@@ -68,11 +68,15 @@ public class Curso {
     }
 
     public void validarMonto(Float monto) {
-        Float montoCurso = this.creditos * CursoService.PRECIO_POR_CREDITO;
-        if (monto <= montoCurso) {
-            String message = "El monto es menor -> (" + monto + "<=" + montoCurso + ")";
+        Float montoCurso = getMonto();
+        if (monto < montoCurso) {
+            String message = "El monto es menor -> (" + monto + "<" + montoCurso + ")";
             throw new HttpException(HttpStatus.BAD_REQUEST, message);
         }
+    }
+
+    public float getMonto() {
+        return this.creditos * CursoService.PRECIO_POR_CREDITO;
     }
 
     @Override

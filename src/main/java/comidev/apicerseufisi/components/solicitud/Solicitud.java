@@ -25,10 +25,10 @@ public class Solicitud {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String codigo;
-    private LocalDateTime createdAt;
     @ManyToOne
     @JoinColumn(name = "alumno_id", nullable = false)
     private Alumno alumno;
+    private LocalDateTime createdAt;
 
     public Solicitud(Alumno alumno, String codigo) {
         this.alumno = alumno;

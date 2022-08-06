@@ -1,7 +1,9 @@
 package comidev.apicerseufisi.components.pago;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import comidev.apicerseufisi.components.pago.response.PagoBySolicitud;
 import comidev.apicerseufisi.components.pago.utils.PagoEstado;
 import comidev.apicerseufisi.components.solicitud.Solicitud;
 import comidev.apicerseufisi.components.solicitud.SolicitudService;
+import comidev.apicerseufisi.exceptions.HttpException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -37,7 +40,7 @@ public class PagoService {
             Curso curso = horarioService.findCursoByCodigo(item.getCursoCodigo());
             curso.validarMonto(item.getMonto());
             // * Registramos Solicitud
-            Pago pagoNEW = new Pago(item.getMonto(), solicitudDB);
+            Pago pagoNEW = new Pago(item, solicitudDB);
             pagoRepo.save(pagoNEW);
             if (!curso.getCursoEstado().equals(CursoEstado.APTO)) {
                 int size = this.getCantidadMatriculados(item.getCursoCodigo());
@@ -65,6 +68,10 @@ public class PagoService {
 
     public Matriculados getMatriculadosByCurso(String cursoCodigo) {
         List<Pago> pagos = findByCursoCodigoAndPagoCREADO(cursoCodigo);
+        if (pagos.isEmpty()) {
+            String message = "El curso no tiene matriculados. Ojo: Es curso_codigo no id";
+            throw new HttpException(HttpStatus.NOT_ACCEPTABLE, message);
+        }
         Matriculados matriculados = new Matriculados(pagos);
         return matriculados;
     }
@@ -103,7 +110,7 @@ public class PagoService {
                     item.setPagoEstado(PagoEstado.ACTIVADO);
                     return item;
                 })
-                .toList();
+                .collect(Collectors.toList());
         List<Pago> pagosDevueltos = cursoCodigo.getNoAperturados().stream()
                 .map(this::findByCursoCodigoAndPagoCREADO)
                 .flatMap(List<Pago>::stream)
@@ -129,3 +136,4 @@ public class PagoService {
         horarioService.terminarMatricula();
     }
 }
+                

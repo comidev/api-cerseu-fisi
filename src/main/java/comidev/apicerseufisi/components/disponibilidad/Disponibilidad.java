@@ -34,7 +34,7 @@ public class Disponibilidad {
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
     private Curso curso;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "fecha_id")
     private List<Fecha> fechas;
 

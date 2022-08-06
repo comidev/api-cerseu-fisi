@@ -1,9 +1,17 @@
 version: "3"
 services:
-  # RABBIT MQ ----------------------------------------------
+  # RABBIT MQ --------------------
   rabbitmq:
     image: rabbitmq:3.9-management
-    container_name: rabbitmq
+    container_name: rabbitmq_dev
     ports:
       - 5672:5672
       - 15672:15672
+  # API CERSEU FISI --------------
+#  api:
+#    build: .
+#    container_name: api
+#    ports:
+#      - 8080:8080
+#    links:
+#      - rabbitmq

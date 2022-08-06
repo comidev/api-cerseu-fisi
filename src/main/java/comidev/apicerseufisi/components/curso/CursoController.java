@@ -22,6 +22,7 @@ import comidev.apicerseufisi.components.curso.request.CursoCreate;
 import comidev.apicerseufisi.components.curso.request.CursoUpdate;
 import comidev.apicerseufisi.components.curso.response.CursoDetails;
 import comidev.apicerseufisi.exceptions.Validator;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -31,12 +32,14 @@ public class CursoController {
     private final CursoService cursoService;
 
     // * C - R - U - D
+    @Operation(summary = "Devuelve los cursos del sistema", description = "Devuelve los cursos del sistema")
     @GetMapping
     public ResponseEntity<List<CursoDetails>> getAll() {
         List<CursoDetails> body = cursoService.getAll();
         return ResponseEntity.status(body.isEmpty() ? 204 : 200).body(body);
     }
 
+    @Operation(summary = "Devuelve el curso del sistema por id", description = "Devuelve el curso del sistema por id")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -44,6 +47,7 @@ public class CursoController {
         return cursoService.getById(id);
     }
 
+    @Operation(summary = "Guarda un curso en el sistema", description = "Registra un curso en el sistema")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -54,6 +58,7 @@ public class CursoController {
         return cursoService.saveCurso(aulaCreate);
     }
 
+    @Operation(summary = "Actualiza un curso en el sistema", description = "Actualiza un curso en el sistema")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -64,6 +69,7 @@ public class CursoController {
         cursoService.updateCurso(cursoUpdate, id);
     }
 
+    @Operation(summary = "Elimina un curso en el sistema", description = "Elimina un curso en el sistema")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

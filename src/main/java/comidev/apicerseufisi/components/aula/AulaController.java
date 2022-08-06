@@ -22,6 +22,7 @@ import comidev.apicerseufisi.components.aula.request.AulaCreate;
 import comidev.apicerseufisi.components.aula.request.AulaUpdate;
 import comidev.apicerseufisi.components.aula.response.AulaDetails;
 import comidev.apicerseufisi.exceptions.Validator;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -30,12 +31,14 @@ import lombok.AllArgsConstructor;
 public class AulaController {
     private final AulaService aulaService;
 
+    @Operation(summary = "Devuelve las aulas del sistema", description = "Devuelve las aulas del sistema")
     @GetMapping
     public ResponseEntity<List<AulaDetails>> getAll() {
         List<AulaDetails> body = aulaService.getAll();
         return ResponseEntity.status(body.isEmpty() ? 204 : 200).body(body);
     }
 
+    @Operation(summary = "Devuelve la aula del sistema según su id", description = "Devuelve la aula del sistema  según el id")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -43,6 +46,7 @@ public class AulaController {
         return aulaService.getById(id);
     }
 
+    @Operation(summary = "Registra el aula al sistema", description = "Registra el aula al sistema")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -53,6 +57,7 @@ public class AulaController {
         return aulaService.saveAula(aulaCreate);
     }
 
+    @Operation(summary = "Actualiza el aula al sistema", description = "Actualiza el aula al sistema")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -63,6 +68,7 @@ public class AulaController {
         aulaService.updateAula(aulaUpdate, id);
     }
 
+    @Operation(summary = "Elimina el aula al sistema", description = "Elimina el aula al sistema")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

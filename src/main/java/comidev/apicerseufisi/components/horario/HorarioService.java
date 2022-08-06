@@ -3,6 +3,7 @@ package comidev.apicerseufisi.components.horario;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,8 @@ public class HorarioService {
 
     // ! CUS - 02: Registrar horarios
     public void registrarHorario(HorarioCreate horarioCreate) {
-        Disponibilidad disponibilidadDB = disponibilidadService.findByDocenteAndCurso(
-                horarioCreate.getCursoId(), horarioCreate.getDocenteId());
+        Disponibilidad disponibilidadDB = disponibilidadService.findByDocenteAndCurso(horarioCreate.getDocenteId(),
+                horarioCreate.getCursoId());
         // * Verificamos si tiene disponibilidad ese día
         Dia dia = horarioCreate.getDia();
         List<Fecha> fechaOpt = disponibilidadDB.getFechas().stream()
@@ -78,21 +79,21 @@ public class HorarioService {
                     item.setHorarioEstado(HorarioEstado.ACTIVADO);
                     return item;
                 })
-                .toList();
+                .collect(Collectors.toList());
         List<Horario> horariosObservados = horarioRepo.findByHorarioEstado(
                 HorarioEstado.OBSERVADO);
         List<Horario> horariosCreados = horarioRepo.findByHorarioEstado(
                 HorarioEstado.CREADO);
         // * Concatenamos las listas rechazadas
         horariosObservados.addAll(horariosCreados);
-        horariosObservados.stream()
+        List<Horario> horariosNoActivados = horariosObservados.stream()
                 .map(item -> {
                     item.setHorarioEstado(HorarioEstado.RECHAZADO);
                     return item;
                 })
                 .toList();
         // * Concatenamos todas las listas y actualizamos :D
-        horariosActivados.addAll(horariosObservados);
+        horariosActivados.addAll(horariosNoActivados);
         horarioRepo.saveAll(horariosActivados);
         return disponibilidadService.getCursoCodigos();
     }
@@ -110,24 +111,22 @@ public class HorarioService {
     }
 
     // ! CUS 07: Reservación de aulas
-    public List<AulaDetails> getAllAulasOrByHora(
+    public List<AulaDetails> getAllAulasByHoraAndDia(
             LocalTime inicio, LocalTime fin, Dia dia) {
-        if (inicio != null && fin != null && dia != null) {
-            List<Long> ids = horarioRepo.findByDiaAndAulaIsNotNull(dia).stream()
-                    // * Obtenemos los horarios que están ocupados
-                    .filter(item -> item.getInicio().isBefore(inicio)
-                            && item.getFin().isAfter(fin))
-                    // * Obtenemos las aulas ocupadas en ese horario
-                    .map(item -> item.getAula().getId())
-                    .toList();
-            if (!ids.isEmpty()) {
-                // * Filtramos y obtenemos las que NO están ocupadas
-                return aulaService.getAll().stream()
-                        .filter(item -> !ids.contains(item.getId()))
-                        .toList();
-            }
+        List<Long> ids = horarioRepo.findByDiaAndAulaIsNotNull(dia).stream()
+                // * Obtenemos los horarios que están ocupados
+                .filter(item -> item.getInicio().isBefore(inicio)
+                        && item.getFin().isAfter(fin))
+                // * Obtenemos las aulas ocupadas en ese horario
+                .map(item -> item.getAula().getId())
+                .toList();
+        if (ids.isEmpty()) {
+            return aulaService.getAll();
         }
-        return aulaService.getAll();
+        // * Filtramos y obtenemos las que NO están ocupadas
+        return aulaService.getAll().stream()
+                .filter(item -> !ids.contains(item.getId()))
+                .toList();
     }
 
     public List<HorarioDetails> getAllByAula(Long aulaId) {

@@ -20,24 +20,6 @@ public class TokenService {
     private final Producer producer;
     private final static String LINK_TOKEN = "http://localhost:8080/auths/confirm?token=";
 
-    public String confirmToken(String token) {
-        TokenConfirmacion confirmationToken = this.findByToken(token);
-        if (confirmationToken.isConfirmed()) {
-            String message = "El token ya esta confirmado wtf!";
-            throw new HttpException(HttpStatus.BAD_REQUEST, message);
-        }
-
-        if (confirmationToken.expired()) {
-            String message = "Token expirado. Vuelva a iniciar sesión.";
-            throw new HttpException(HttpStatus.UNAUTHORIZED, message);
-        }
-
-        confirmationToken.confirmar();
-        tokenRepo.save(confirmationToken);
-        String correo = confirmationToken.getUsuario().getCorreo();
-        return correo;
-    }
-
     public void sendToken(Usuario usuario) {
         String token = UUID.randomUUID().toString();
         tokenRepo.save(new TokenConfirmacion(token, usuario));
@@ -55,6 +37,24 @@ public class TokenService {
                 "Activar correo - Cerseu FISI",
                 contenido);
         producer.send(body);
+    }
+
+    public String confirmToken(String token) {
+        TokenConfirmacion confirmationToken = this.findByToken(token);
+        if (confirmationToken.isConfirmed()) {
+            String message = "El token ya esta confirmado wtf!";
+            throw new HttpException(HttpStatus.BAD_REQUEST, message);
+        }
+
+        if (confirmationToken.expired()) {
+            String message = "Token expirado. Vuelva a iniciar sesión.";
+            throw new HttpException(HttpStatus.UNAUTHORIZED, message);
+        }
+
+        confirmationToken.confirmar();
+        tokenRepo.save(confirmationToken);
+        String correo = confirmationToken.getUsuario().getCorreo();
+        return correo;
     }
 
     private TokenConfirmacion findByToken(String token) {

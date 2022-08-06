@@ -22,6 +22,7 @@ import comidev.apicerseufisi.components.pago.request.PagosCreate;
 import comidev.apicerseufisi.components.pago.response.Matriculados;
 import comidev.apicerseufisi.components.pago.response.PagoBySolicitud;
 import comidev.apicerseufisi.exceptions.Validator;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -30,6 +31,7 @@ import lombok.AllArgsConstructor;
 public class PagoController {
     private final PagoService pagoService;
 
+    @Operation(summary = "Registras los pagos del alumno", description = "Este debe mandar la solicitud que contiene los pagos.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -39,6 +41,7 @@ public class PagoController {
         pagoService.registrarPagos(pagos);
     }
 
+    @Operation(summary = "Devuelve los pagos por solicitud id", description = "Cuando el trabajador quiera ver los datelles de una solicitud puede obtener los pagos de esa solicitud :D")
     @GetMapping("/solicitud/{solicitudId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -46,6 +49,7 @@ public class PagoController {
         return pagoService.getBySolicitud(solicitudId);
     }
 
+    @Operation(summary = "Devuelve los cursos que está siendo pedido por al menos un alumno", description = "Cuando quieras ver los cursos que son pedidos.")
     @GetMapping("/cursos-pedidos")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -53,6 +57,7 @@ public class PagoController {
         return pagoService.getCursosPedidos();
     }
 
+    @Operation(summary = "Devuelve los alumnos matriculados por curso esto es el CUS de cantidad de alumnos matriculados :D", description = "Cuando accedes al detalle de la lista de curso que son pedidos puedes mostrar esto")
     @GetMapping("/matriculados")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -61,6 +66,7 @@ public class PagoController {
         return pagoService.getMatriculadosByCurso(cursoCodigo);
     }
 
+    @Operation(summary = "Devuelve los horarios de un alumno por su id", description = "Podrías mostrar esto como lo hace el SUM")
     @GetMapping("/horarios/{alumnoId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -68,6 +74,7 @@ public class PagoController {
         return pagoService.getHorariosByAlumno(alumnoId);
     }
 
+    @Operation(summary = "Inicias la matricula del sistema", description = "Al hacer esta petición inciarás la matricula del sistema")
     @GetMapping("/iniciar-matriculacion")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -75,7 +82,8 @@ public class PagoController {
         pagoService.iniciarMatriculacion();
     }
 
-    @GetMapping("/teminar-matricula")
+    @Operation(summary = "Terminas la matricula del sistema", description = "Al hacer esta petición terminas la matricula del sistema")
+    @GetMapping("/terminar-matricula")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void terminarMatricula() {
