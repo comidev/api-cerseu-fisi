@@ -27,10 +27,15 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("API Cerseu FISI")
-                        .description("Hola pendejos. Si ven algún error (y de seguro lo verán)"
-                                + " me avisan; si tienen un idea, me avisan; si quieren que cree"
-                                + " un endpoint que duelva cierta cosa, me avisan y me dan el formato"
-                                + " de cómo es la 'cosa'. Estamos en desarrollo aún, es normal que no salga perfecto gaaaaa")
+                        .description("<b>Gente me avisan o me mandan msg por whatsapp si:</b>"
+                                + "<ul>"
+                                + "     <li>Ven algún error que es muy probable que lo vean.</li>"
+                                + "     <li>Quieren que modifique el cuerpo de retorno o lo que retorna la petición</li>"
+                                + "     <li>Quieren que cree un nuevo endpoint</li>"
+                                + "</ul>"
+                                + "<p>NOTA: Sea el punto 3 o 4 también manden el formato del cuerpo en JSON</p>"
+                                + "<p>Analicen bien los endpoints puede que en verdad todo esté bien solo que fallaron en algo.</p>"
+                                + "<p>Igual estamos en desarrollo así que normal fallar.</p>")
                         .version("v0.0.1")
                         .contact(new Contact()
                                 .name("Omar Miranda")
