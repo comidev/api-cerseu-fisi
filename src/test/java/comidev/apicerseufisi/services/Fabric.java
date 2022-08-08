@@ -65,7 +65,7 @@ public class Fabric {
             rol = Rol.ALUMNO;
         String passwordHash = password != null ? encoder.encode(password) : "password";
         return usuarioRepo.save(new Usuario(new UsuarioCreate(
-                uuid() + uuid(), "nombre", "apellido",
+                uuid(), "nombre", "apellido",
                 uuid().substring(0, 8),
                 uuid().substring(0, 9),
                 Sexo.MASCULINO, uuid() + "@gmail.com", passwordHash, rol)));

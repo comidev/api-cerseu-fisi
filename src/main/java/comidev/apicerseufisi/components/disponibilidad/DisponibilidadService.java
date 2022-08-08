@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import comidev.apicerseufisi.components.curso.Curso;
 import comidev.apicerseufisi.components.curso.CursoService;
-import comidev.apicerseufisi.components.curso.utils.CursoCodigo;
 import comidev.apicerseufisi.components.disponibilidad.request.DisponibilidadCreate;
 import comidev.apicerseufisi.components.disponibilidad.request.DisponibilidadUpdate;
 import comidev.apicerseufisi.components.disponibilidad.response.DisponibilidadDetails;
@@ -73,40 +72,13 @@ public class DisponibilidadService {
     }
 
     public List<DisponibilidadListByDocente> getByDocente(Long docenteId) {
-        return findByDocente(docenteId).stream()
+        return disponibilidadRepo.findByDocente(new Docente(docenteId)).stream()
                 .map(DisponibilidadListByDocente::new)
                 .toList();
-    }
-
-    public List<Disponibilidad> findByDocente(Long docenteId) {
-        return disponibilidadRepo.findByDocente(new Docente(docenteId));
     }
 
     public List<DisponibilidadListAll> getAll() {
         return disponibilidadRepo.findAll().stream()
                 .map(DisponibilidadListAll::new).toList();
-    }
-
-    public List<Disponibilidad> findByCursoCodigo(String codigo) {
-        return disponibilidadRepo.findByCurso(findCursoByCodigo(codigo));
-    }
-
-    // ? Se encarga de traer un curso por su codigo
-    public Curso findCursoByCodigo(String codigo) {
-        return cursoService.findCursoByCodigo(codigo);
-    }
-
-    public void verificarEstado(Curso curso, int size) {
-        cursoService.verificarEstado(curso, size);
-    }
-
-    // ? Se encarga de traer un curso por su codigo
-    public CursoCodigo getCursoCodigos() {
-        return cursoService.getCursoCodigos();
-    }
-
-    // ? Se encarga de traer un curso por su codigo
-    public void terminarMatricula() {
-        cursoService.terminarMatricula();
     }
 }

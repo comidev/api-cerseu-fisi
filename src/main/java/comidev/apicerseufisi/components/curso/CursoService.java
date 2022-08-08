@@ -1,7 +1,6 @@
 package comidev.apicerseufisi.components.curso;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import comidev.apicerseufisi.components.curso.request.CursoCreate;
 import comidev.apicerseufisi.components.curso.request.CursoUpdate;
 import comidev.apicerseufisi.components.curso.response.CursoDetails;
-import comidev.apicerseufisi.components.curso.utils.CursoCodigo;
 import comidev.apicerseufisi.components.curso.utils.CursoEstado;
 import comidev.apicerseufisi.exceptions.HttpException;
 import lombok.AllArgsConstructor;
@@ -46,45 +44,16 @@ public class CursoService {
         }
     }
 
-    public CursoCodigo getCursoCodigos() {
-        List<Curso> aperturados = cursoRepo
-                .findByCursoEstado(CursoEstado.APTO).stream()
-                .map(item -> {
-                    item.setCursoEstado(CursoEstado.APERTURADO);
-                    return item;
-                })
-                .collect(Collectors.toList());
-        List<Curso> noAperturados = cursoRepo
-                .findByCursoEstado(CursoEstado.NO_APTO).stream()
-                .map(item -> {
-                    item.setCursoEstado(CursoEstado.NO_APERTURADO);
-                    return item;
-                })
-                .toList();
-        List<String> codigoAperturados = aperturados.stream()
-                .map(Curso::getCodigo)
-                .toList();
-        List<String> codigoNoAperturados = noAperturados.stream()
-                .map(Curso::getCodigo)
-                .toList();
-        aperturados.addAll(noAperturados);
-        cursoRepo.saveAll(aperturados);
-        return new CursoCodigo(codigoAperturados, codigoNoAperturados);
+    public void iniciarMatricula() {
+        cursoRepo.updateEstadoFor(CursoEstado.APERTURADO, CursoEstado.APTO);
+        cursoRepo.updateEstadoFor(CursoEstado.NO_APERTURADO, CursoEstado.NO_APTO);
     }
 
     public void terminarMatricula() {
-        List<Curso> cursos = cursoRepo
-                .findByCursoEstado(CursoEstado.APERTURADO).stream()
-                .map(item -> {
-                    item.setCursoEstado(CursoEstado.NO_APERTURADO);
-                    return item;
-                })
-                .toList();
-        cursoRepo.saveAll(cursos);
+        cursoRepo.updateEstadoFor(CursoEstado.APERTURADO, CursoEstado.NO_APERTURADO);
     }
 
     // * C - R - U - D
-
     public List<CursoDetails> getAll() {
         return cursoRepo.findAll().stream()
                 .map(CursoDetails::new)

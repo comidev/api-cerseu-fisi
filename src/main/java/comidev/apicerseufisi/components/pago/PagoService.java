@@ -1,7 +1,6 @@
 package comidev.apicerseufisi.components.pago;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -9,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import comidev.apicerseufisi.components.alumno.Alumno;
 import comidev.apicerseufisi.components.curso.Curso;
+import comidev.apicerseufisi.components.curso.CursoService;
 import comidev.apicerseufisi.components.curso.response.CursoDetails;
-import comidev.apicerseufisi.components.curso.utils.CursoCodigo;
 import comidev.apicerseufisi.components.curso.utils.CursoEstado;
 import comidev.apicerseufisi.components.horario.HorarioService;
 import comidev.apicerseufisi.components.horario.response.HorarioByAlumno;
@@ -29,6 +28,7 @@ public class PagoService {
     private final PagoRepo pagoRepo;
     private final HorarioService horarioService;
     private final SolicitudService solicitudService;
+    private final CursoService cursoService;
 
     // ! CUS 05: Registrar constancia de pagos
     @Transactional
@@ -37,15 +37,24 @@ public class PagoService {
         Solicitud solicitudDB = solicitudService.registrarSolicitud(pagos.getSolicitud());
         pagos.getPagos().forEach((item) -> {
             // * Validar código del curso y el monto
-            Curso curso = horarioService.findCursoByCodigo(item.getCursoCodigo());
+            String codigo = item.getCursoCodigo();
+            Curso curso = findCursoByCodigo(codigo);
+
             curso.validarMonto(item.getMonto());
             // * Registramos Solicitud
             Pago pagoNEW = new Pago(item, solicitudDB);
             pagoRepo.save(pagoNEW);
             if (!curso.getCursoEstado().equals(CursoEstado.APTO)) {
-                int size = this.getCantidadMatriculados(item.getCursoCodigo());
-                horarioService.verificarCursoEstado(curso, size);
+                int size = findByCursoCodigoAndPagoCREADO(codigo).size();
+                cursoService.verificarEstado(curso, size);
             }
+        });
+    }
+
+    private Curso findCursoByCodigo(String codigo) {
+        return pagoRepo.findCursoByCodigo(codigo).orElseThrow(() -> {
+            String message = "El curso -> (codigo=" + codigo + ") no existe";
+            return new HttpException(HttpStatus.NOT_FOUND, message);
         });
     }
 
@@ -72,59 +81,34 @@ public class PagoService {
         return matriculados;
     }
 
-    public int getCantidadMatriculados(String cursoCodigo) {
-        return findByCursoCodigoAndPagoCREADO(cursoCodigo).size();
-    }
-
     private List<Pago> findByCursoCodigoAndPagoCREADO(String cursoCodigo) {
         return pagoRepo.findByCursoCodigoAndPagoEstado(cursoCodigo, PagoEstado.CREADO);
     }
 
     public List<HorarioByAlumno> getHorariosByAlumno(Long alumnoId) {
-        return pagoRepo.findByAlumnoAndEstado(new Alumno(alumnoId),
+        return pagoRepo.findHorarioByAlumnoAndEstado(new Alumno(alumnoId),
                 PagoEstado.ACTIVADO).stream()
                 .map(HorarioByAlumno::new)
                 .toList();
     }
 
-    public List<Pago> findBySolicitudAndPagoACTIVO(Solicitud item) {
-        return pagoRepo.findBySolicitudAndPagoEstado(item, PagoEstado.ACTIVADO);
-    }
-
     @Transactional
     public void iniciarMatriculacion() {
-        // * Actualizamos el estado de los pagos matriculados :D
-        CursoCodigo cursoCodigo = horarioService.iniciarMatriculacion();
-        List<Pago> pagosActivados = cursoCodigo.getAperturados().stream()
-                .map(this::findByCursoCodigoAndPagoCREADO)
-                .flatMap(List<Pago>::stream)
-                .map(item -> {
-                    item.setPagoEstado(PagoEstado.ACTIVADO);
-                    return item;
-                })
-                .collect(Collectors.toList());
-        List<Pago> pagosDevueltos = cursoCodigo.getNoAperturados().stream()
-                .map(this::findByCursoCodigoAndPagoCREADO)
-                .flatMap(List<Pago>::stream)
-                .map(item -> {
-                    item.setPagoEstado(PagoEstado.DEVUELTO);
-                    return item;
-                })
-                .toList();
-        pagosActivados.addAll(pagosDevueltos);
-        pagoRepo.saveAll(pagosActivados);
+        // * Todos los pagos que tengan el curso apto los actualizo :D!
+        pagoRepo.updateEstadoByEstadoAndCursoEstado(PagoEstado.ACTIVADO,
+                PagoEstado.CREADO, CursoEstado.APTO);
+        // * Si no alcanzaron el mínimo los devuelvo u-u
+        pagoRepo.updateEstadoByEstadoAndCursoEstado(PagoEstado.DEVUELTO,
+                PagoEstado.CREADO, CursoEstado.NO_APTO);
+        horarioService.iniciarMatriculacion();
+        cursoService.iniciarMatricula();
     }
 
     @Transactional
     public void terminarMatricula() {
-        List<Pago> pagosConcluidos = pagoRepo
-                .findByPagoEstado(PagoEstado.ACTIVADO).stream()
-                .map(item -> {
-                    item.setPagoEstado(PagoEstado.CONCLUIDO);
-                    return item;
-                })
-                .toList();
-        pagoRepo.saveAll(pagosConcluidos);
+        // * Los pagos activados los concluimos :D
+        pagoRepo.updateEstadoFor(PagoEstado.CONCLUIDO, PagoEstado.ACTIVADO);
         horarioService.terminarMatricula();
+        cursoService.terminarMatricula();
     }
 }

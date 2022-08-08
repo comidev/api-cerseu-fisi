@@ -2,7 +2,6 @@ package comidev.apicerseufisi.components.horario;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Service;
 import comidev.apicerseufisi.components.aula.Aula;
 import comidev.apicerseufisi.components.aula.AulaService;
 import comidev.apicerseufisi.components.aula.response.AulaDetails;
-import comidev.apicerseufisi.components.curso.Curso;
-import comidev.apicerseufisi.components.curso.utils.CursoCodigo;
 import comidev.apicerseufisi.components.curso.utils.CursoEstado;
 import comidev.apicerseufisi.components.disponibilidad.Disponibilidad;
 import comidev.apicerseufisi.components.disponibilidad.DisponibilidadService;
@@ -33,8 +30,9 @@ public class HorarioService {
 
     // ! CUS - 02: Registrar horarios
     public void registrarHorario(HorarioCreate horarioCreate) {
-        Disponibilidad disponibilidadDB = disponibilidadService.findByDocenteAndCurso(horarioCreate.getDocenteId(),
-                horarioCreate.getCursoId());
+        Disponibilidad disponibilidadDB = disponibilidadService
+                .findByDocenteAndCurso(horarioCreate.getDocenteId(),
+                        horarioCreate.getCursoId());
         // * Verificamos si tiene disponibilidad ese día
         Dia dia = horarioCreate.getDia();
         List<Fecha> fechaOpt = disponibilidadDB.getFechas().stream()
@@ -71,18 +69,16 @@ public class HorarioService {
         return new HorarioDetails(this.findById(id));
     }
 
-    public CursoCodigo iniciarMatriculacion() {
+    public void iniciarMatriculacion() {
         // * Activamos los válidos y rechazamos los inválidos
         horarioRepo.updateEstadoFor(HorarioEstado.ACTIVADO, HorarioEstado.VALIDADO);
         // * Rechazamos los inválidos
         horarioRepo.updateEstadoFor(HorarioEstado.RECHAZADO, HorarioEstado.OBSERVADO);
         horarioRepo.updateEstadoFor(HorarioEstado.RECHAZADO, HorarioEstado.CREADO);
-        return disponibilidadService.getCursoCodigos();
     }
 
     public void terminarMatricula() {
         horarioRepo.updateEstadoFor(HorarioEstado.ACTIVADO, HorarioEstado.CONCLUIDO);
-        disponibilidadService.terminarMatricula();
     }
 
     // ! CUS 07: Reservación de aulas
@@ -120,7 +116,8 @@ public class HorarioService {
                 .getCursoEstado()
                 .equals(CursoEstado.APTO);
         if (!isApto) {
-            String message = "El curso que desea asociar al aula no tiene suficiente (20) matriculados :(";
+            String message = "El curso que desea asociar al aula no"
+                    + " tiene suficiente (20) matriculados :(";
             throw new HttpException(HttpStatus.BAD_REQUEST, message);
         }
         // * Actualizamos
@@ -169,21 +166,5 @@ public class HorarioService {
     private List<Horario> findByDocenteForEstadoACTIVADO(Long docenteId) {
         return horarioRepo.findByDocenteForEstado(
                 new Docente(docenteId), HorarioEstado.ACTIVADO);
-    }
-
-    public Curso findCursoByCodigo(String codigo) {
-        return disponibilidadService.findCursoByCodigo(codigo);
-    }
-
-    public void verificarCursoEstado(Curso curso, int size) {
-        disponibilidadService.verificarEstado(curso, size);
-    }
-
-    public List<Horario> findHorariosByCodigoCurso(String codigo) {
-        return disponibilidadService.findByCursoCodigo(codigo).stream()
-                .map(horarioRepo::findByDisponibilidad)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
     }
 }

@@ -22,7 +22,7 @@ public class HandleException {
         return ResponseEntity.status(body.getStatus()).body(body);
     }
 
-    // * Error del Cliente, Spring o Servidor
+    // * Error del Servidor
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> unexpectedError(HttpServletRequest request, Exception exception) {
         ErrorMessage body = createMessage(request, exception);
