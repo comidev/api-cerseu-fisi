@@ -11,12 +11,12 @@ import lombok.Getter;
 
 @Getter
 public class ErrorMessage {
-    private String error;
-    private int status;
-    private String message;
-    private String method;
-    private String path;
-    private Timestamp timestamp;
+    private String error; // NOT FOUND
+    private int status; // 404
+    private String message; // Usuario no encontrado
+    private String method; // GET
+    private String path; // usuarios/212
+    private Timestamp timestamp; // Una fecha xd :v
 
     public ErrorMessage(HttpStatus status, String message, HttpServletRequest request) {
         this.error = status.getReasonPhrase().toUpperCase();

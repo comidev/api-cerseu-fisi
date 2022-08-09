@@ -32,7 +32,7 @@ import lombok.AllArgsConstructor;
 public class UsuarioController {
     private final UsuarioService usuarioService;
 
-    @Operation(summary = "Devuelve los usuarios del sistema", description = "Devuelve los usurios del sistema, puede ser en funcion de un rol o sin rol (es decir todos jsjsjs)")
+    @Operation(summary = "Devuelve los usuarios del sistema", description = "Devuelve los usuarios del sistema, puede ser en funcion de un rol o sin rol (es decir todos jsjsjs)")
     @GetMapping
     public ResponseEntity<List<UsuarioList>> getAll(
             @RequestParam(name = "rol", required = false) Rol rol) {
