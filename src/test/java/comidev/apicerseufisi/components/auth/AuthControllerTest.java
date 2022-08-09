@@ -1,5 +1,6 @@
 package comidev.apicerseufisi.components.auth;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,8 @@ public class AuthControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
-        assertTrue(res.bodyString().contains("access_token"));
+        assertEquals(HttpStatus.OK, res.status());
+        assertTrue(res.bodyString().contains("accessToken"));
     }
 
     @Test
@@ -56,7 +57,7 @@ public class AuthControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.UNAUTHORIZED);
+        assertEquals(HttpStatus.UNAUTHORIZED, res.status());
         assertTrue(res.bodyString().contains("Username y/o password incorrecto(s)"));
     }
 
@@ -79,7 +80,7 @@ public class AuthControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.CONFLICT);
+        assertEquals(HttpStatus.CONFLICT, res.status());
     }
 
     // * GET -> /confirmar
@@ -95,7 +96,7 @@ public class AuthControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, res.status());
     }
 
     @Test
@@ -110,6 +111,6 @@ public class AuthControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.BAD_REQUEST);
+        assertEquals(HttpStatus.BAD_REQUEST, res.status());
     }
 }

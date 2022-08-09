@@ -7,11 +7,17 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+  # SONARQUBE
+  sonarqube:
+    image: sonarqube:8.9.9-community
+    container_name: sonarqube
+    ports:
+      - 9000:9000
   # API CERSEU FISI --------------
-#  api:
-#    build: .
-#    container_name: api
-#    ports:
-#      - 8080:8080
-#    links:
-#      - rabbitmq
+  #  api:
+  #    build: .
+  #    container_name: api
+  #    ports:
+  #      - 8080:8080
+  #    links:
+  #      - rabbitmq

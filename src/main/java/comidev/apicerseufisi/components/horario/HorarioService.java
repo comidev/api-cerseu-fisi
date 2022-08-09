@@ -2,6 +2,7 @@ package comidev.apicerseufisi.components.horario;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class HorarioService {
         Dia dia = horarioCreate.getDia();
         List<Fecha> fechaOpt = disponibilidadDB.getFechas().stream()
                 .filter(item -> item.getDia().equals(dia))
-                .toList();
+                .collect(Collectors.toList());
         if (fechaOpt.isEmpty()) {
             String message = "No tiene disponibilidad para el dia " + dia.toString();
             throw new HttpException(HttpStatus.BAD_REQUEST, message);
@@ -58,11 +59,11 @@ public class HorarioService {
         if (horarioEstado != null) {
             return horarioRepo.findByHorarioEstado(horarioEstado).stream()
                     .map(HorarioDetails::new)
-                    .toList();
+                    .collect(Collectors.toList());
         }
         return horarioRepo.findAll().stream()
                 .map(HorarioDetails::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public HorarioDetails getById(Long id) {
@@ -90,20 +91,20 @@ public class HorarioService {
                         && item.getFin().isAfter(fin))
                 // * Obtenemos las aulas ocupadas en ese horario
                 .map(item -> item.getAula().getId())
-                .toList();
+                .collect(Collectors.toList());
         if (ids.isEmpty()) {
             return aulaService.getAll();
         }
         // * Filtramos y obtenemos las que NO están ocupadas
         return aulaService.getAll().stream()
                 .filter(item -> !ids.contains(item.getId()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<HorarioDetails> getAllByAula(Long aulaId) {
         return horarioRepo.findByAula(new Aula(aulaId)).stream()
                 .map(HorarioDetails::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void reservarAula(Long horarioId, Long aulaId) {
@@ -160,7 +161,7 @@ public class HorarioService {
     public List<HorarioDetails> getHorariosByDocente(Long docenteId) {
         return findByDocenteForEstadoACTIVADO(docenteId).stream()
                 .map(HorarioDetails::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private List<Horario> findByDocenteForEstadoACTIVADO(Long docenteId) {

@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.components.curso;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class CursoService {
     public List<CursoDetails> getAll() {
         return cursoRepo.findAll().stream()
                 .map(CursoDetails::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public CursoDetails getById(Long id) {

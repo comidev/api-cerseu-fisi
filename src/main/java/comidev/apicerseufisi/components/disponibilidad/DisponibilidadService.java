@@ -47,7 +47,7 @@ public class DisponibilidadService {
         // * Creamos las Fechas
         List<Fecha> fechasNEW = disponibilidadCreate.getFechas().stream()
                 .map(Fecha::new)
-                .toList();
+                .collect(Collectors.toList());
         // * Registramos
         disponibilidadRepo.save(new Disponibilidad(docenteDB, cursoDB, fechasNEW));
     }
@@ -74,11 +74,12 @@ public class DisponibilidadService {
     public List<DisponibilidadListByDocente> getByDocente(Long docenteId) {
         return disponibilidadRepo.findByDocente(new Docente(docenteId)).stream()
                 .map(DisponibilidadListByDocente::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<DisponibilidadListAll> getAll() {
         return disponibilidadRepo.findAll().stream()
-                .map(DisponibilidadListAll::new).toList();
+                .map(DisponibilidadListAll::new)
+                .collect(Collectors.toList());
     }
 }

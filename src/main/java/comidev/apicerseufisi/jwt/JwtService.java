@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 
 @Service
 public class JwtService {
-    private final String SECRET = "apicerseufisi";
-    private final String EXPIRES_IN_SECOND = "1800";
-    private final String BEARER = "Bearer ";
-    private final String ISSUER = "apicerseufisi";
+    private static final String SECRET = "apicerseufisi";
+    private static final String EXPIRES_IN_SECOND = "1800";
+    private static final String BEARER = "Bearer ";
+    private static final String ISSUER = "apicerseufisi";
 
     public Tokens createTokens(Payload payload) {
         String accessToken = createToken(payload, 0);

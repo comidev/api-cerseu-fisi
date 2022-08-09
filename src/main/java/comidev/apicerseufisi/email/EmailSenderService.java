@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmailSenderService {
     private final NotificacionService notificacionService;
     private final JavaMailSender mailSender;
-    private final static String FROM = "comidev.contacto@gmail.com";
+    private static final String FROM = "comidev.contacto@gmail.com";
 
     @Async
     public void send(NotificacionCreate notificacionCreate) {

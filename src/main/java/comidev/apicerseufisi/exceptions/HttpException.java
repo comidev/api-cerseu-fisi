@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 public class HttpException extends RuntimeException {
-    private HttpStatus status;
-    private String message;
+    private final HttpStatus status;
+    private final String message;
 
     public HttpException(HttpStatus status, String message) {
         this.status = status;

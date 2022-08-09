@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.components.aula;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,8 @@ public class AulaService {
 
     public List<AulaDetails> getAll() {
         return aulaRepo.findAll().stream()
-                .map(AulaDetails::new).toList();
+                .map(AulaDetails::new)
+                .collect(Collectors.toList());
     }
 
     public AulaDetails getById(Long id) {

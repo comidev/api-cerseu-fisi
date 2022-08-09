@@ -17,7 +17,7 @@ public class RabbitMQConfig {
     @Value("${comidev.queue.email}")
     private String queueName;
     @Value("${comidev.routing.email}")
-    private String ROUTING;
+    private String routing;
 
     @Bean
     public Queue queue() {
@@ -34,7 +34,7 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(queue)
                 .to(exchange)
-                .with(ROUTING);
+                .with(routing);
     }
 
     @Bean

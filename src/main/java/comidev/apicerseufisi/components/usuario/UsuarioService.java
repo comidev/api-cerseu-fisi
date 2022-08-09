@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,20 +37,20 @@ public class UsuarioService implements UserDetailsService {
             if (rol.equals(Rol.ALUMNO)) {
                 return alumnoService.findAll().stream()
                         .map(UsuarioList::new)
-                        .toList();
+                        .collect(Collectors.toList());
             }
             if (rol.equals(Rol.DOCENTE)) {
                 return docenteService.findAll().stream()
                         .map(UsuarioList::new)
-                        .toList();
+                        .collect(Collectors.toList());
             }
             return usuarioRepo.findByRol(rol).stream()
                     .map(UsuarioList::new)
-                    .toList();
+                    .collect(Collectors.toList());
         }
         return usuarioRepo.findAll().stream()
                 .map(UsuarioList::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public UsuarioDetails getById(Long id, Rol rol) {

@@ -1,27 +1,29 @@
 package comidev.apicerseufisi.services;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@AllArgsConstructor
 public class Response {
-    private final ResultActions resultActions;
+    private final MockHttpServletResponse response;
 
-    public void isStatus(HttpStatus status) throws Exception {
-        resultActions.andExpect(status().is(status.value()));
+    public Response(ResultActions resultActions) {
+        this.response = resultActions.andReturn().getResponse();
+    }
+
+    public HttpStatus status() throws Exception {
+        return HttpStatus.valueOf(this.response.getStatus());
     }
 
     public <T> T body(Class<T> clazz) {
@@ -36,7 +38,7 @@ public class Response {
 
     public String bodyString() {
         try {
-            return resultActions.andReturn().getResponse().getContentAsString();
+            return response.getContentAsString();
         } catch (UnsupportedEncodingException e) {
             return null;
         }

@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.components.pago.response;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import comidev.apicerseufisi.components.alumno.Alumno;
 import comidev.apicerseufisi.components.curso.CursoService;
@@ -27,7 +28,7 @@ public class Matriculados {
                     Alumno alumno = item.getSolicitud().getAlumno();
                     return new UsuarioDetails(alumno.getId(), alumno.getUsuario());
                 })
-                .toList();
+                .collect(Collectors.toList());
         this.estado = size >= CursoService.MIN_ALUMNOS_MATRICULADOS
                 ? CursoEstado.APTO
                 : CursoEstado.NO_APTO;

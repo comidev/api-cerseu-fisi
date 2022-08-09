@@ -1,5 +1,6 @@
 package comidev.apicerseufisi.components.solicitud;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class SolicitudControllerTest {
         Response response = request.get("/solicitudes").send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
         assertTrue(response.bodyContains(solicitud.getCodigo()));
     }
 
@@ -48,7 +49,8 @@ public class SolicitudControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
+
         assertTrue(response.bodyContains(solicitud.getCodigo(), solicitud.getId()));
     }
 }

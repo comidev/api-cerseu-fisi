@@ -3,6 +3,7 @@ package comidev.apicerseufisi.components.solicitud;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -27,13 +28,13 @@ public class SolicitudService {
     public List<SolicitudList> getAll() {
         return solicitudRepo.findAll().stream()
                 .map(SolicitudList::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<SolicitudByAlumno> getAllByAlumno(Long alumnoId) {
         return this.findSolicitudAllByAlumno(alumnoId).stream()
                 .map(SolicitudByAlumno::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<Solicitud> findSolicitudAllByAlumno(Long alumnoId) {

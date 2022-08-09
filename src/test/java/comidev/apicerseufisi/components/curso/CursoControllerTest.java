@@ -1,5 +1,6 @@
 package comidev.apicerseufisi.components.curso;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class CursoControllerTest {
         Response response = request.get("/cursos").send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
         assertTrue(response.bodyString().contains(codigo));
     }
 
@@ -47,7 +48,7 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
         assertTrue(response.bodyString().contains(codigo));
     }
 
@@ -60,7 +61,7 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.NOT_FOUND);
+        assertEquals(HttpStatus.NOT_FOUND, response.status());
     }
 
     // * POST ->
@@ -76,7 +77,7 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.CREATED);
+        assertEquals(HttpStatus.CREATED, response.status());
     }
 
     @Test
@@ -92,7 +93,7 @@ public class CursoControllerTest {
                 .body(body)
                 .send();
         // Afirmar
-        response.isStatus(HttpStatus.CONFLICT);
+        assertEquals(HttpStatus.CONFLICT, response.status());
     }
 
     // * PUT -> /{id}
@@ -109,7 +110,7 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
     }
 
     @Test
@@ -124,7 +125,7 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.NOT_FOUND);
+        assertEquals(HttpStatus.NOT_FOUND, response.status());
     }
 
     // * DELETE -> /{id}
@@ -138,6 +139,6 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
     }
 }

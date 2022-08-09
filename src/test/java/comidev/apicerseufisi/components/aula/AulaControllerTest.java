@@ -1,5 +1,6 @@
 package comidev.apicerseufisi.components.aula;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class AulaControllerTest {
         Response response = request.get("/aulas").send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
     }
 
     // * GET -> /{id}
@@ -45,7 +46,7 @@ public class AulaControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
         assertTrue(response.bodyString()
                 .contains(String.valueOf(aula.getId())));
     }
@@ -62,7 +63,7 @@ public class AulaControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.CREATED);
+        assertEquals(HttpStatus.CREATED, response.status());
         assertTrue(response.bodyString()
                 .contains(String.valueOf(body.getCapacidad())));
     }
@@ -80,7 +81,7 @@ public class AulaControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
     }
 
     // * DELETE -> /{id}
@@ -94,6 +95,6 @@ public class AulaControllerTest {
                 .send();
 
         // Afirmar
-        response.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.status());
     }
 }

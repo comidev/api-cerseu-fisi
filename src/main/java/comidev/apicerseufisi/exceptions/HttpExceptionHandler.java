@@ -13,12 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ControllerAdvice
-public class HandleException {
+public class HttpExceptionHandler {
     // * Error del Cliente
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<ErrorMessage> generalError(HttpServletRequest request, HttpException exception) {
         ErrorMessage body = new ErrorMessage(exception.getStatus(),
-        exception.getMessage(),request);
+                exception.getMessage(), request);
         return ResponseEntity.status(body.getStatus()).body(body);
     }
 
@@ -63,26 +63,20 @@ public class HandleException {
         if (message.contains("enum")) {
             String[] fields = message.split("\\.");
             int length = fields.length;
-            message = "El (valor=" + fields[length - 1]
-                    + ") no es un valor del enum " + fields[length - 2];
+            message = buildErrorType(fields[length - 1], "enum", fields[length - 2]);
         } else if (message.contains("IllegalArgumentException: Invalid boolean")) {
             String[] fields = message.split(" ");
             String valor = fields[fields.length - 1];
-            String simpleValor = valor.substring(
-                    1, valor.length() - 1);
-            message = "El (valor=" + simpleValor
-                    + ") no es boolean (true o false).";
+            String simpleValor = valor.substring(1, valor.length() - 1);
+            message = buildErrorType(simpleValor, "boolean", "(true o false)");
         } else if (message.contains("NumberFormatException")) {
             String[] fields = message.split(" ");
             String valor = fields[fields.length - 1];
-            String simpleValor = valor.substring(
-                    1, valor.length() - 1);
+            String simpleValor = valor.substring(1, valor.length() - 1);
             if (message.contains("'int'")) {
-                message = "El (valor=" + simpleValor
-                        + ") no es un numero entero";
+                message = buildErrorType(simpleValor, "numero", "(1, 2, 3, 4)");
             } else {
-                message = "El (valor=" + simpleValor
-                        + ") no es un numero";
+                message = buildErrorType(simpleValor, "numero", "(1.1, 20.154)");
             }
         }
         return message;
@@ -91,9 +85,6 @@ public class HandleException {
     private static String errorOfDesarialize(String message) {
         if (message.contains("Enum class")) {
             String messageTotal = message.split(";")[0];
-            String[] fields1 = messageTotal.split(": ");
-            int length = fields1.length;
-            String valores = fields1[length - 1];
             String[] nameAndValue = messageTotal.split(" from String ");
             String value = nameAndValue[1].split(":")[0];
             value = value.substring(1, value.length() - 1);
@@ -101,10 +92,13 @@ public class HandleException {
             int length3 = fields3.length;
             String name = fields3[length3 - 1];
             name = name.substring(0, name.length() - 1);
-            return "El (valor=" + value + ") no es de tipo " + name
-                    + ", este tipo tiene los siguientes valores: " + valores;
+            return buildErrorType(value, "enum", name);
         }
         return message;
+    }
+
+    private static String buildErrorType(String value, String type, String example) {
+        return "El (valor=" + value + ") no es de tipo " + type + " -> " + example;
     }
 
     private static String errorUniqueColumn(String message) {

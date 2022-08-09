@@ -1,5 +1,6 @@
 package comidev.apicerseufisi.components.disponibilidad;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -22,104 +23,104 @@ import comidev.apicerseufisi.utils.Dia;
 // * PATH: /disponibilidades
 @ApiIntegrationTest
 public class DisponibilidadControllerTest {
-    @Autowired
-    private Fabric fabric;
-    @Autowired
-    private Request request;
+        @Autowired
+        private Fabric fabric;
+        @Autowired
+        private Request request;
 
-    // * POST ->
-    @Test
-    void CREATED_CuandoGuardaLaDisponibilidad_saveDisponibilidad() throws Exception {
-        // Arreglar
-        Docente docente = fabric.createDocente(null);
-        Curso curso = fabric.createCurso(null, null);
-        List<FechaCreate> fechas = List.of(new FechaCreate(Dia.LUNES,
-                "18:00", "22:00"));
-        DisponibilidadCreate body = new DisponibilidadCreate(docente.getId(),
-                curso.getId(), fechas);
+        // * POST ->
+        @Test
+        void CREATED_CuandoGuardaLaDisponibilidad_saveDisponibilidad() throws Exception {
+                // Arreglar
+                Docente docente = fabric.createDocente(null);
+                Curso curso = fabric.createCurso(null, null);
+                List<FechaCreate> fechas = List.of(new FechaCreate(Dia.LUNES,
+                                "18:00", "22:00"));
+                DisponibilidadCreate body = new DisponibilidadCreate(docente.getId(),
+                                curso.getId(), fechas);
 
-        // Actuar
-        Response response = request.post("/disponibilidades")
-                .body(body)
-                .send();
+                // Actuar
+                Response response = request.post("/disponibilidades")
+                                .body(body)
+                                .send();
 
-        // Afirmar
-        response.isStatus(HttpStatus.CREATED);
-    }
+                // Afirmar
+                assertEquals(HttpStatus.CREATED, response.status());
+        }
 
-    // * PUT -> ?cursoId={}&docenteId={}
-    @Test
-    void OK_CuandoActualizaLaDisponibilidad_updateDisponibilidad() throws Exception {
-        // Arreglar
-        Disponibilidad disponibilidad = fabric.createDisponibilidad(
-                null, null, null);
+        // * PUT -> ?cursoId={}&docenteId={}
+        @Test
+        void OK_CuandoActualizaLaDisponibilidad_updateDisponibilidad() throws Exception {
+                // Arreglar
+                Disponibilidad disponibilidad = fabric.createDisponibilidad(
+                                null, null, null);
 
-        List<FechaCreate> fechas = List.of(new FechaCreate(Dia.MARTES,
-                "18:00", "22:00"));
+                List<FechaCreate> fechas = List.of(new FechaCreate(Dia.MARTES,
+                                "18:00", "22:00"));
 
-        DisponibilidadUpdate body = new DisponibilidadUpdate(fechas);
+                DisponibilidadUpdate body = new DisponibilidadUpdate(fechas);
 
-        // Actuar
-        Response response = request.put("/disponibilidades")
-                .addParam("docenteId", disponibilidad.getDocente().getId())
-                .addParam("cursoId", disponibilidad.getCurso().getId())
-                .body(body)
-                .send();
+                // Actuar
+                Response response = request.put("/disponibilidades")
+                                .addParam("docenteId", disponibilidad.getDocente().getId())
+                                .addParam("cursoId", disponibilidad.getCurso().getId())
+                                .body(body)
+                                .send();
 
-        // Afirmar
-        response.isStatus(HttpStatus.OK);
-    }
+                // Afirmar
+                assertEquals(HttpStatus.OK, response.status());
+        }
 
-    // * DELETE -> ?cursoId={}&docenteId={}
-    @Test
-    void OK_CuandoEliminaLaDisponibilidad_deleteDisponibilidad() throws Exception {
-        // Arreglar
-        Disponibilidad disponibilidad = fabric.createDisponibilidad(
-                null, null, null);
+        // * DELETE -> ?cursoId={}&docenteId={}
+        @Test
+        void OK_CuandoEliminaLaDisponibilidad_deleteDisponibilidad() throws Exception {
+                // Arreglar
+                Disponibilidad disponibilidad = fabric.createDisponibilidad(
+                                null, null, null);
 
-        // Actuar
-        Response response = request.delete("/disponibilidades")
-                .addParam("docenteId", disponibilidad.getDocente().getId())
-                .addParam("cursoId", disponibilidad.getCurso().getId())
-                .send();
+                // Actuar
+                Response response = request.delete("/disponibilidades")
+                                .addParam("docenteId", disponibilidad.getDocente().getId())
+                                .addParam("cursoId", disponibilidad.getCurso().getId())
+                                .send();
 
-        // Afirmar
-        response.isStatus(HttpStatus.OK);
-    }
+                // Afirmar
+                assertEquals(HttpStatus.OK, response.status());
+        }
 
-    // * GET -> ?cursoId={}&docenteId={}
-    @Test
-    void OK_CuandoDevuelveLaDisponibilidad_getByDocenteAndCurso() throws Exception {
-        // Arreglar
-        Disponibilidad disponibilidad = fabric.createDisponibilidad(
-                null, null, null);
+        // * GET -> ?cursoId={}&docenteId={}
+        @Test
+        void OK_CuandoDevuelveLaDisponibilidad_getByDocenteAndCurso() throws Exception {
+                // Arreglar
+                Disponibilidad disponibilidad = fabric.createDisponibilidad(
+                                null, null, null);
 
-        // Actuar
-        Response response = request.get("/disponibilidades")
-                .addParam("docenteId", disponibilidad.getDocente().getId())
-                .addParam("cursoId", disponibilidad.getCurso().getId())
-                .send();
+                // Actuar
+                Response response = request.get("/disponibilidades")
+                                .addParam("docenteId", disponibilidad.getDocente().getId())
+                                .addParam("cursoId", disponibilidad.getCurso().getId())
+                                .send();
 
-        // Afirmar
-        response.isStatus(HttpStatus.OK);
-        assertTrue(response.bodyString().contains(disponibilidad.getId().toString()));
-    }
+                // Afirmar
+                assertEquals(HttpStatus.OK, response.status());
+                assertTrue(response.bodyString().contains(disponibilidad.getId().toString()));
+        }
 
-    // * GET -> /docente/{docenteId}
-    @Test
-    void OK_CuandoDevuelveLasDisponibilidadesDeUnDocente_getByDocente()
-            throws Exception {
-        // Arreglar
-        Disponibilidad disponibilidad = fabric.createDisponibilidad(
-                null, null, null);
+        // * GET -> /docente/{docenteId}
+        @Test
+        void OK_CuandoDevuelveLasDisponibilidadesDeUnDocente_getByDocente()
+                        throws Exception {
+                // Arreglar
+                Disponibilidad disponibilidad = fabric.createDisponibilidad(
+                                null, null, null);
 
-        // Actuar
-        Response response = request.get("/disponibilidades/docente/"
-                + disponibilidad.getDocente().getId())
-                .send();
+                // Actuar
+                Response response = request.get("/disponibilidades/docente/"
+                                + disponibilidad.getDocente().getId())
+                                .send();
 
-        // Afirmar
-        response.isStatus(HttpStatus.OK);
-        assertTrue(response.bodyString().contains(disponibilidad.getId().toString()));
-    }
+                // Afirmar
+                assertEquals(HttpStatus.OK, response.status());
+                assertTrue(response.bodyString().contains(disponibilidad.getId().toString()));
+        }
 }

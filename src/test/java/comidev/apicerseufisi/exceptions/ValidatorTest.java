@@ -35,7 +35,7 @@ public class ValidatorTest {
         });
 
         // Afirmar
-        assertEquals(res.getStatus(), HttpStatus.BAD_REQUEST);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
         assertTrue(res.getMessage().startsWith("Mal formato -> "));
     }
 
@@ -62,7 +62,7 @@ public class ValidatorTest {
         });
 
         // Afirmar
-        assertEquals(res.getStatus(), HttpStatus.BAD_REQUEST);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
         assertTrue(res.getMessage().startsWith("Mal formato -> "));
     }
 
@@ -90,7 +90,7 @@ public class ValidatorTest {
         });
 
         // Afirmar
-        assertEquals(res.getStatus(), HttpStatus.BAD_REQUEST);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
         assertTrue(res.getMessage().startsWith("Mal formato -> "));
     }
 }

@@ -20,15 +20,8 @@ public class SecurityConfig {
                 .logout().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests().anyRequest().permitAll()
                 .and().build();
     }
-
-    /* @Bean
-    public FilterRegistrationBean<JwtFilter> jwtFilter() {
-        FilterRegistrationBean<JwtFilter> filter = new FilterRegistrationBean<>();
-        filter.setFilter(new JwtFilter());
-        filter.addUrlPatterns("/*");
-        filter.setOrder(Ordered.LOWEST_PRECEDENCE - 1);
-        return filter;
-    } */
 }

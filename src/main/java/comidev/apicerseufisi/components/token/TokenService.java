@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 public class TokenService {
     private final TokenRepo tokenRepo;
     private final Producer producer;
-    private final static String LINK_TOKEN = "http://localhost:8080/auths/confirm?token=";
+    private static final String LINK_TOKEN = "http://localhost:8080/auths/confirm?token=";
 
     public void sendToken(Usuario usuario) {
         String token = UUID.randomUUID().toString();
@@ -53,8 +53,7 @@ public class TokenService {
 
         confirmationToken.confirmar();
         tokenRepo.save(confirmationToken);
-        String correo = confirmationToken.getUsuario().getCorreo();
-        return correo;
+        return confirmationToken.getUsuario().getCorreo();
     }
 
     private TokenConfirmacion findByToken(String token) {

@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.components.disponibilidad.response;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import comidev.apicerseufisi.components.disponibilidad.Disponibilidad;
 import comidev.apicerseufisi.components.fecha.dto.FechaResponse;
@@ -20,6 +21,7 @@ public class DisponibilidadListAll {
         this.docenteId = disponibilidad.getDocente().getId();
         this.cursoCodigo = disponibilidad.getCurso().getCodigo();
         this.fechas = disponibilidad.getFechas().stream()
-                .map(FechaResponse::new).toList();
+                .map(FechaResponse::new)
+                .collect(Collectors.toList());
     }
 }

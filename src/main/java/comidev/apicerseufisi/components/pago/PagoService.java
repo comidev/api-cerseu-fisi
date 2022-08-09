@@ -1,6 +1,7 @@
 package comidev.apicerseufisi.components.pago;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class PagoService {
     public void registrarPagos(PagosCreate pagos) {
         // * Guardamos solicitud
         Solicitud solicitudDB = solicitudService.registrarSolicitud(pagos.getSolicitud());
-        pagos.getPagos().forEach((item) -> {
+        pagos.getPagos().forEach(item -> {
             // * Validar código del curso y el monto
             String codigo = item.getCursoCodigo();
             Curso curso = findCursoByCodigo(codigo);
@@ -61,14 +62,14 @@ public class PagoService {
     public List<PagoBySolicitud> getBySolicitud(Long solicitudId) {
         return pagoRepo.findBySolicitud(new Solicitud(solicitudId)).stream()
                 .map(PagoBySolicitud::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     // ! CUS 06: Consultar cantidad de alumnos
     public List<CursoDetails> getCursosPedidos() {
         return pagoRepo.findCursoForPagoEstado(PagoEstado.CREADO).stream()
                 .map(CursoDetails::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public Matriculados getMatriculadosByCurso(String cursoCodigo) {
@@ -77,8 +78,7 @@ public class PagoService {
             String message = "El curso no tiene matriculados. Ojo: Es curso_codigo no id";
             throw new HttpException(HttpStatus.NOT_ACCEPTABLE, message);
         }
-        Matriculados matriculados = new Matriculados(pagos);
-        return matriculados;
+        return new Matriculados(pagos);
     }
 
     private List<Pago> findByCursoCodigoAndPagoCREADO(String cursoCodigo) {
@@ -89,7 +89,7 @@ public class PagoService {
         return pagoRepo.findHorarioByAlumnoAndEstado(new Alumno(alumnoId),
                 PagoEstado.ACTIVADO).stream()
                 .map(HorarioByAlumno::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Transactional

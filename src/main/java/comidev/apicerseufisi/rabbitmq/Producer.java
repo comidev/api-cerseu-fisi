@@ -13,7 +13,7 @@ public class Producer {
     private final RabbitTemplate rabbitTemplate;
 
     @Value("${comidev.routing.email}")
-    private String ROUTING;
+    private String routing;
 
     public Producer(DirectExchange exchange, RabbitTemplate rabbitTemplate) {
         this.exchange = exchange;
@@ -21,6 +21,6 @@ public class Producer {
     }
 
     public void send(Object message) {
-        rabbitTemplate.convertAndSend(exchange.getName(), ROUTING, message);
+        rabbitTemplate.convertAndSend(exchange.getName(), routing, message);
     }
 }

@@ -1,5 +1,6 @@
 package comidev.apicerseufisi.jwt;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tokens {
-    private String access_token;
-    private String refresh_token;
+    private String accessToken;
+    private String refreshToken;
 }

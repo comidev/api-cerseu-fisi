@@ -36,7 +36,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, res.status());
         assertTrue(res.bodyString().contains(usuario.getCodigo()));
     }
 
@@ -51,7 +51,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, res.status());
         assertTrue(res.bodyString().contains(alumno.getUsuario().getCodigo()));
     }
 
@@ -65,7 +65,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.BAD_REQUEST);
+        assertEquals(HttpStatus.BAD_REQUEST, res.status());
     }
 
     // * GET -> /usuarios/{id}
@@ -79,7 +79,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, res.status());
         UsuarioDetails body = res.body(UsuarioDetails.class);
         assertEquals(body.getCodigo(), usuario.getCodigo());
     }
@@ -95,7 +95,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, res.status());
         UsuarioDetails body = res.body(UsuarioDetails.class);
         assertEquals(body.getCodigo(), alumno.getUsuario().getCodigo());
     }
@@ -110,7 +110,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.BAD_REQUEST);
+        assertEquals(HttpStatus.BAD_REQUEST, res.status());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.NOT_FOUND);
+        assertEquals(HttpStatus.NOT_FOUND, res.status());
     }
 
     // * PUT -> /usuarios/{id}
@@ -148,7 +148,7 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, res.status());
     }
 
     // * DELETE -> /usuarios/{id}
@@ -164,6 +164,6 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        res.isStatus(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, res.status());
     }
 }
