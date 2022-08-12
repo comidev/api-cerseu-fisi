@@ -152,7 +152,7 @@ public class HorarioService {
     }
 
     private Horario findById(Long horarioId) {
-        return horarioRepo.findById(horarioId).orElseThrow(() -> {
+        return horarioRepo.findById(horarioId).orElseThrow(() -> { 
             String message = "El horario -> (id=" + horarioId + ") no existe!";
             return new HttpException(HttpStatus.NOT_FOUND, message);
         });

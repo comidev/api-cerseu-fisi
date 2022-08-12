@@ -86,8 +86,8 @@ public class PagoService {
     }
 
     public List<HorarioByAlumno> getHorariosByAlumno(Long alumnoId) {
-        return pagoRepo.findHorarioByAlumnoAndEstado(new Alumno(alumnoId),
-                PagoEstado.ACTIVADO).stream()
+        return pagoRepo.findHorarioByAlumnoAndEstado(
+                new Alumno(alumnoId), PagoEstado.ACTIVADO).stream()
                 .map(HorarioByAlumno::new)
                 .collect(Collectors.toList());
     }

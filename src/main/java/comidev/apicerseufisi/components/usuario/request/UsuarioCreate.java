@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UsuarioCreate {
-    //@NotEmpty(message = "No puede ser vacio")
+    @NotEmpty(message = "No puede ser vacio")
     private String codigo;
 
     @NotEmpty(message = "No puede ser vacio")
