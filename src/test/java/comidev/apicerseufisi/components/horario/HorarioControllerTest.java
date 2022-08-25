@@ -120,7 +120,7 @@ public class HorarioControllerTest {
 
         // * PATCH -> /reservar?horarioId={}&aulaId={}
         @Test
-        void OK_CuandoReservaElAula_reservarAula() throws Exception {
+        void NO_CONTENT_CuandoReservaElAula_reservarAula() throws Exception {
                 // Arreglar
                 Curso curso = fabric.createCurso(null, CursoEstado.APTO);
                 Horario horario = fabric.createHorario(curso, null,
@@ -134,12 +134,12 @@ public class HorarioControllerTest {
                                 .send();
 
                 // Afirmar
-                assertEquals(HttpStatus.OK, response.status());
+                assertEquals(HttpStatus.NO_CONTENT, response.status());
         }
 
         // * PATCH -> /{id}?estado={}
         @Test
-        void OK_CuandoEstableceElEstadoDelHorario_setHorarioEstado() throws Exception {
+        void NO_CONTENT_CuandoEstableceElEstadoDelHorario_setHorarioEstado() throws Exception {
                 // Arreglar
                 Horario horario = fabric.createHorario(null, null,
                                 null, null, null);
@@ -150,7 +150,7 @@ public class HorarioControllerTest {
                                 .send();
 
                 // Afirmar
-                assertEquals(HttpStatus.OK, response.status());
+                assertEquals(HttpStatus.NO_CONTENT, response.status());
         }
 
         // * GET -> /docente/{docenteId}
@@ -169,6 +169,5 @@ public class HorarioControllerTest {
                 assertEquals(HttpStatus.OK, response.status());
                 String bodyRes = response.bodyString();
                 assertTrue(bodyRes.contains(horario.getId().toString()));
-                System.out.println("\n" + bodyRes);
         }
 }

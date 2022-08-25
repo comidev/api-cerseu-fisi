@@ -86,7 +86,6 @@ public class PagoControllerTest {
 
                 // Afirmar
                 assertEquals(HttpStatus.OK, response.status());
-                System.out.println("\n" + response.bodyString());
         }
 
         // * GET ->
@@ -128,12 +127,11 @@ public class PagoControllerTest {
 
                 // Afirmar
                 assertEquals(HttpStatus.OK, response.status());
-                System.out.println("\n" + response.bodyString());
         }
 
         // * GET ->
         @Test
-        void OK_CuandoXYZ_iniciarMatriculacion() throws Exception {
+        void NO_CONTENT_CuandoXYZ_iniciarMatriculacion() throws Exception {
                 // Arreglar
                 Alumno alumno = fabric.createAlumno(null);
                 Curso curso = fabric.createCurso(null, CursoEstado.APTO);
@@ -147,12 +145,12 @@ public class PagoControllerTest {
                                 .send();
 
                 // Afirmar
-                assertEquals(HttpStatus.OK, response.status());
+                assertEquals(HttpStatus.NO_CONTENT, response.status());
         }
 
         // * GET ->
         @Test
-        void OK_CuandoXYZ_terminarMatricula() throws Exception {
+        void NO_CONTENT_CuandoXYZ_terminarMatricula() throws Exception {
                 // Arreglar
 
                 // Actuar
@@ -160,6 +158,6 @@ public class PagoControllerTest {
                                 .send();
 
                 // Afirmar
-                assertEquals(HttpStatus.OK, response.status());
+                assertEquals(HttpStatus.NO_CONTENT, response.status());
         }
 }

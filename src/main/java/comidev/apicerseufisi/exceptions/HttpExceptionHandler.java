@@ -1,11 +1,14 @@
 package comidev.apicerseufisi.exceptions;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -14,9 +17,30 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ControllerAdvice
 public class HttpExceptionHandler {
+
+    // * ERROR DE VALIDACION
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorMessage> validationException(HttpServletRequest request,
+            MethodArgumentNotValidException exception) {
+        ErrorMessage body = new ErrorMessage(HttpStatus.BAD_REQUEST,
+                extractedMessage(exception.getBindingResult().getFieldErrors()),
+                request);
+        return ResponseEntity.status(body.getStatus()).body(body);
+    }
+
+    private final String extractedMessage(List<FieldError> errors) {
+        return "[{ "
+                + errors.stream()
+                        .map(e -> "'" + e.getField() + "' : '"
+                                + e.getDefaultMessage() + "'")
+                        .collect(Collectors.joining(" }, { "))
+                + " }]";
+    }
+
     // * Error del Cliente
     @ExceptionHandler(HttpException.class)
-    public ResponseEntity<ErrorMessage> generalError(HttpServletRequest request, HttpException exception) {
+    public ResponseEntity<ErrorMessage> generalError(
+            HttpServletRequest request, HttpException exception) {
         ErrorMessage body = new ErrorMessage(exception.getStatus(),
                 exception.getMessage(), request);
         return ResponseEntity.status(body.getStatus()).body(body);
@@ -24,14 +48,16 @@ public class HttpExceptionHandler {
 
     // * Error del Servidor
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> unexpectedError(HttpServletRequest request, Exception exception) {
+    public ResponseEntity<ErrorMessage> unexpectedError(
+            HttpServletRequest request, Exception exception) {
         ErrorMessage body = createMessage(request, exception);
         return ResponseEntity.status(body.getStatus()).body(body);
     }
 
-    public static ErrorMessage createMessage(HttpServletRequest request, Exception exception) {
+    public static ErrorMessage createMessage(
+            HttpServletRequest request, Exception exception) {
         String exceptionType = exception.getClass().getSimpleName();
-        log.error("Tipo de Excepcion -> {}", exceptionType);
+        log.error("Tipo de Excepción -> {}", exceptionType);
 
         HttpStatus status;
         String message = exception.getMessage();
@@ -112,7 +138,6 @@ public class HttpExceptionHandler {
     private static final List<String> BAD_REQUEST = List.of(
             "DuplicateKeyException",
             "HttpRequestMethodNotSupportedException",
-            "MethodArgumentNotValidException",
             "MissingRequestHeaderException",
             "MissingServletRequestParameterException",
             "MethodArgumentTypeMismatchException",

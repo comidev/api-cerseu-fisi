@@ -54,14 +54,13 @@ public class CursoService {
         cursoRepo.updateEstadoFor(CursoEstado.APERTURADO, CursoEstado.NO_APERTURADO);
     }
 
-    // * C - R - U - D
-    public List<CursoDetails> getAll() {
+    public List<CursoDetails> getAllCursos() {
         return cursoRepo.findAll().stream()
                 .map(CursoDetails::new)
                 .collect(Collectors.toList());
     }
 
-    public CursoDetails getById(Long id) {
+    public CursoDetails getCursoById(Long id) {
         return new CursoDetails(this.findById(id));
     }
 
@@ -70,7 +69,7 @@ public class CursoService {
         return new CursoDetails(cursoRepo.save(cursoNEW));
     }
 
-    public void updateCurso(CursoUpdate cursoUpdate, Long id) {
+    public void updateCurso(Long id, CursoUpdate cursoUpdate) {
         Curso cursoDB = this.findById(id);
         cursoDB.update(cursoUpdate);
         cursoRepo.save(cursoDB);

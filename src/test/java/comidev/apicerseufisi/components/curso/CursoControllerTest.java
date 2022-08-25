@@ -98,7 +98,7 @@ public class CursoControllerTest {
 
     // * PUT -> /{id}
     @Test
-    void OK_CuandoActualizaElCurso_updateCurso() throws Exception {
+    void NO_CONTENT_CuandoActualizaElCurso_updateCurso() throws Exception {
         // Arreglar
         Curso curso = fabric.createCurso(null, null);
         CursoUpdate body = new CursoUpdate("nombre", fabric.uuid(),
@@ -110,7 +110,7 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        assertEquals(HttpStatus.OK, response.status());
+        assertEquals(HttpStatus.NO_CONTENT, response.status());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class CursoControllerTest {
 
     // * DELETE -> /{id}
     @Test
-    void OK_CuandoEliminaElCurso_eliminarCurso() throws Exception {
+    void NO_CONTENT_CuandoEliminaElCurso_eliminarCurso() throws Exception {
         // Arreglar
         Curso curso = fabric.createCurso(null, null);
 
@@ -139,6 +139,6 @@ public class CursoControllerTest {
                 .send();
 
         // Afirmar
-        assertEquals(HttpStatus.OK, response.status());
+        assertEquals(HttpStatus.NO_CONTENT, response.status());
     }
 }

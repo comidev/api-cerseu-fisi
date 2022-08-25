@@ -136,7 +136,7 @@ public class UsuarioControllerTest {
     }
 
     @Test
-    void OK_CuandoActualizaCorrectamente_ActualizarUsuario() throws Exception {
+    void NO_CONTENT_CuandoActualizaCorrectamente_ActualizarUsuario() throws Exception {
         // Arreglar
         String password = "123456";
         Usuario usuario = fabric.createUsuario(null, password);
@@ -148,12 +148,12 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        assertEquals(HttpStatus.OK, res.status());
+        assertEquals(HttpStatus.NO_CONTENT, res.status());
     }
 
     // * DELETE -> /usuarios/{id}
     @Test
-    void OK_CuandoEliminaCorrectamente_EliminarUsuario() throws Exception {
+    void NO_CONTENT_CuandoEliminaCorrectamente_EliminarUsuario() throws Exception {
         // Arreglar
         String password = "123456";
         Usuario usuario = fabric.createUsuario(null, password);
@@ -164,6 +164,6 @@ public class UsuarioControllerTest {
                 .send();
 
         // Afirmar
-        assertEquals(HttpStatus.OK, res.status());
+        assertEquals(HttpStatus.NO_CONTENT, res.status());
     }
 }

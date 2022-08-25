@@ -1,14 +1,10 @@
 package comidev.apicerseufisi.exceptions;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
 public class Validator {
     private static final String TIME = "HH:mm";
@@ -16,21 +12,6 @@ public class Validator {
     private static final String DATETIME = "aaaa-MM-dd HH:mm";
 
     private Validator() {
-    }
-
-    public static void checkValidBody(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String message = "[{ "
-                    + bindingResult.getFieldErrors().stream()
-                            .map(Validator::errorBody)
-                            .collect(Collectors.joining(" }, { "))
-                    + " }]";
-            throw new HttpException(BAD_REQUEST, message);
-        }
-    }
-
-    private static String errorBody(FieldError e) {
-        return "'" + e.getField() + "' : '" + e.getDefaultMessage() + "'";
     }
 
     public static LocalTime checkValidTime(String text) {

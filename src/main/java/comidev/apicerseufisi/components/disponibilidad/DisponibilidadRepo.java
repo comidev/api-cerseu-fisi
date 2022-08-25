@@ -11,6 +11,8 @@ import comidev.apicerseufisi.components.docente.Docente;
 public interface DisponibilidadRepo extends JpaRepository<Disponibilidad, Long> {
     Optional<Disponibilidad> findByDocenteAndCurso(Docente docente, Curso curso);
 
+    boolean existsByDocenteAndCurso(Docente docente, Curso curso);
+
     List<Disponibilidad> findByDocente(Docente docente);
 
     List<Disponibilidad> findByCurso(Curso curso);

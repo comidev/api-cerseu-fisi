@@ -21,21 +21,21 @@ public class AuthService {
     private final UsuarioService usuarioService;
     private final TokenService tokenService;
 
-    public Tokens login(UsuarioLogin usuario) {
+    public Tokens login(UsuarioLogin body) {
         try {
-            return loginService.login(usuario);
+            return loginService.login(body);
         } catch (DisabledException e) {
-            Usuario usuarioDB = usuarioService.findByCorreo(usuario.getCorreo());
+            Usuario usuarioDB = usuarioService.findByCorreo(body.getCorreo());
             String message = tokenService.resendToken(usuarioDB)
-                    ? "Hemos reenviado un enlace a su correo, actívelo por favor :D"
+                    ? "Hemos reenviado un enlace a su correo, activar por favor :D"
                     : "Tiene un enlace en su correo por activar :D";
             throw new HttpException(HttpStatus.UNAUTHORIZED, message);
         }
     }
 
     @Transactional
-    public void registrar(UsuarioCreate usuarioCreate) {
-        Usuario usuario = usuarioService.registrarUsuario(usuarioCreate);
+    public void registrar(UsuarioCreate body) {
+        Usuario usuario = usuarioService.registrarUsuario(body);
         tokenService.sendToken(usuario);
     }
 

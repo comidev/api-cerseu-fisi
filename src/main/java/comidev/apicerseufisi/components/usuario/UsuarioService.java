@@ -31,7 +31,7 @@ public class UsuarioService implements UserDetailsService {
     private final DocenteService docenteService;
     public final BCryptPasswordEncoder bcrypt;
 
-    public List<UsuarioList> getAll(Rol rol) {
+    public List<UsuarioList> getAllUsersOrByRole(Rol rol) {
         if (rol != null) {
             // * ¿alumno o docente?
             if (rol.equals(Rol.ALUMNO)) {
@@ -53,8 +53,8 @@ public class UsuarioService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    public UsuarioDetails getById(Long id, Rol rol) {
-        Usuario usuario = findByIdAndRol(id, rol);
+    public UsuarioDetails getUserByIdAndOrRol(Long id, Rol rol) {
+        Usuario usuario = findByIdAndOrRol(id, rol);
         return new UsuarioDetails(rol != null ? id : null, usuario);
     }
 
@@ -66,7 +66,6 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuarioDB = usuarioRepo.save(usuario);
 
         Rol rol = usuarioCreate.getRol();
-        // * Guardamos alumno o docente
         if (rol.equals(Rol.ALUMNO)) {
             alumnoService.saveAlumno(usuarioDB);
         }
@@ -76,23 +75,22 @@ public class UsuarioService implements UserDetailsService {
         return usuarioDB;
     }
 
-    public void actualizarUsuario(UsuarioUpdate usuarioUpdate, Long id, Rol rol) {
-        Usuario usuarioDB = findByIdAndRol(id, rol);
-        validarPassword(usuarioDB.getPassword(), usuarioUpdate.getActualPassword());
-        usuarioDB.update(usuarioUpdate);
-        usuarioDB.setPassword(bcrypt.encode(usuarioUpdate.getNuevoPassword()));
+    public void updateUser(Long id, Rol rol, UsuarioUpdate body) {
+        Usuario usuarioDB = findByIdAndOrRol(id, rol);
+        validarPassword(usuarioDB.getPassword(), body.getActualPassword());
+        usuarioDB.update(body);
+        usuarioDB.setPassword(bcrypt.encode(body.getNuevoPassword()));
         usuarioRepo.save(usuarioDB);
     }
 
-    public void eliminarUsuario(String password, Long id, Rol rol) {
-        Usuario usuarioDB = findByIdAndRol(id, rol);
+    public void deleteUser(Long id, String password, Rol rol) {
+        Usuario usuarioDB = findByIdAndOrRol(id, rol);
         validarPassword(usuarioDB.getPassword(), password);
         usuarioRepo.delete(usuarioDB);
     }
 
-    private Usuario findByIdAndRol(Long id, Rol rol) {
+    private Usuario findByIdAndOrRol(Long id, Rol rol) {
         if (rol != null) {
-            // * ¿alumno o docente?
             if (rol.equals(Rol.ALUMNO)) {
                 return alumnoService.findById(id).getUsuario();
             }

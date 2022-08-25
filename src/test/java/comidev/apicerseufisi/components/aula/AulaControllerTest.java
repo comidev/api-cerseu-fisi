@@ -26,13 +26,14 @@ public class AulaControllerTest {
     @Test
     void OK_CuandoDevuelveLasAulas_getAll() throws Exception {
         // Arreglar
-        fabric.createAula();
+        Aula aula = fabric.createAula();
 
         // Actuar
         Response response = request.get("/aulas").send();
 
         // Afirmar
         assertEquals(HttpStatus.OK, response.status());
+        assertTrue(response.bodyContains(aula.getCapacidad(), aula.getId()));
     }
 
     // * GET -> /{id}
@@ -70,7 +71,7 @@ public class AulaControllerTest {
 
     // * PUT -> /{id}
     @Test
-    void OK_CuandoActualizaElAula_updateAula() throws Exception {
+    void NO_CONTENT_CuandoActualizaElAula_updateAula() throws Exception {
         // Arreglar
         Aula aula = fabric.createAula();
         AulaUpdate body = new AulaUpdate(50);
@@ -81,12 +82,12 @@ public class AulaControllerTest {
                 .send();
 
         // Afirmar
-        assertEquals(HttpStatus.OK, response.status());
+        assertEquals(HttpStatus.NO_CONTENT, response.status());
     }
 
     // * DELETE -> /{id}
     @Test
-    void OK_CuandoEliminaElAula_eliminarAula() throws Exception {
+    void NO_CONTENT_CuandoEliminaElAula_eliminarAula() throws Exception {
         // Arreglar
         Aula aula = fabric.createAula();
 
@@ -95,6 +96,6 @@ public class AulaControllerTest {
                 .send();
 
         // Afirmar
-        assertEquals(HttpStatus.OK, response.status());
+        assertEquals(HttpStatus.NO_CONTENT, response.status());
     }
 }

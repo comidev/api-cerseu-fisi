@@ -1,18 +1,23 @@
 server:
     port: 8080
-# H2 --------------------------------------------------
+# H2 o PostgreSQL --------------------------------------------
 spring:
+    application:
+        name: api-cerseu-fisi
     datasource:
-        url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+        url: jdbc:postgresql://localhost:5432/cerseu
+        #url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
         username: sa
         password: sa
-        driver-class-name: org.h2.Driver
+        #driver-class-name: org.h2.Driver
     jpa:
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: update
+            #ddl-auto: create-drop
         properties:
             hibernate:
-                dialect: org.hibernate.dialect.H2Dialect
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                #dialect: org.hibernate.dialect.H2Dialect
     # Envio de email -----------------------------------------
     mail:
         host: smtp.gmail.com

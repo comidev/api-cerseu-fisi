@@ -93,10 +93,10 @@ public class HorarioService {
                 .map(item -> item.getAula().getId())
                 .collect(Collectors.toList());
         if (ids.isEmpty()) {
-            return aulaService.getAll();
+            return aulaService.getAllAulas();
         }
         // * Filtramos y obtenemos las que NO están ocupadas
-        return aulaService.getAll().stream()
+        return aulaService.getAllAulas().stream()
                 .filter(item -> !ids.contains(item.getId()))
                 .collect(Collectors.toList());
     }
@@ -110,7 +110,7 @@ public class HorarioService {
     public void reservarAula(Long horarioId, Long aulaId) {
         // * Validamos y obtenemos: Aula y Horario
         Horario horarioDB = this.findById(horarioId);
-        Aula aulaDB = aulaService.findById(aulaId);
+        Aula aulaDB = aulaService.findAulaById(aulaId);
         // * Validamos si el curso tiene el minimo
         boolean isApto = horarioDB.getDisponibilidad()
                 .getCurso()
@@ -152,7 +152,7 @@ public class HorarioService {
     }
 
     private Horario findById(Long horarioId) {
-        return horarioRepo.findById(horarioId).orElseThrow(() -> { 
+        return horarioRepo.findById(horarioId).orElseThrow(() -> {
             String message = "El horario -> (id=" + horarioId + ") no existe!";
             return new HttpException(HttpStatus.NOT_FOUND, message);
         });

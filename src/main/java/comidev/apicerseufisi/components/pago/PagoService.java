@@ -59,7 +59,7 @@ public class PagoService {
         });
     }
 
-    public List<PagoBySolicitud> getBySolicitud(Long solicitudId) {
+    public List<PagoBySolicitud> getPagosBySolicitud(Long solicitudId) {
         return pagoRepo.findBySolicitud(new Solicitud(solicitudId)).stream()
                 .map(PagoBySolicitud::new)
                 .collect(Collectors.toList());
@@ -100,6 +100,7 @@ public class PagoService {
         // * Si no alcanzaron el mínimo los devuelvo u-u
         pagoRepo.updateEstadoByEstadoAndCursoEstado(PagoEstado.DEVUELTO,
                 PagoEstado.CREADO, CursoEstado.NO_APTO);
+        // ? actualizar el horario :v
         horarioService.iniciarMatriculacion();
         cursoService.iniciarMatricula();
     }

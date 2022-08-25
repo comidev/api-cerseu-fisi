@@ -17,35 +17,35 @@ import lombok.AllArgsConstructor;
 public class AulaService {
     private final AulaRepo aulaRepo;
 
-    public Aula findById(Long id) {
-        return aulaRepo.findById(id).orElseThrow(() -> {
-            String message = "El Alumno con id -> (" + id + ") no existe!";
-            return new HttpException(HttpStatus.NOT_FOUND, message);
-        });
-    }
-
-    public List<AulaDetails> getAll() {
+    public List<AulaDetails> getAllAulas() {
         return aulaRepo.findAll().stream()
                 .map(AulaDetails::new)
                 .collect(Collectors.toList());
     }
 
-    public AulaDetails getById(Long id) {
-        return new AulaDetails(this.findById(id));
+    public AulaDetails getAulaById(Long id) {
+        return new AulaDetails(this.findAulaById(id));
     }
 
-    public AulaDetails saveAula(AulaCreate aulaCreate) {
-        Aula aulaNEW = new Aula(aulaCreate);
+    public AulaDetails saveAula(AulaCreate body) {
+        Aula aulaNEW = new Aula(body);
         return new AulaDetails(aulaRepo.save(aulaNEW));
     }
 
-    public void updateAula(AulaUpdate aulaUpdate, Long id) {
-        Aula aulaDB = this.findById(id);
-        aulaDB.update(aulaUpdate);
+    public void updateAula(Long id, AulaUpdate body) {
+        Aula aulaDB = this.findAulaById(id);
+        aulaDB.update(body);
         aulaRepo.save(aulaDB);
     }
 
-    public void eliminarAula(Long id) {
-        aulaRepo.delete(this.findById(id));
+    public void deleteAula(Long id) {
+        aulaRepo.delete(this.findAulaById(id));
+    }
+
+    public Aula findAulaById(Long id) {
+        return aulaRepo.findById(id).orElseThrow(() -> {
+            String message = "El Aula con id -> (" + id + ") no existe!";
+            return new HttpException(HttpStatus.NOT_FOUND, message);
+        });
     }
 }

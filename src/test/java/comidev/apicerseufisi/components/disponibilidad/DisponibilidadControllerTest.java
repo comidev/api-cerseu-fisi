@@ -50,7 +50,7 @@ public class DisponibilidadControllerTest {
 
         // * PUT -> ?cursoId={}&docenteId={}
         @Test
-        void OK_CuandoActualizaLaDisponibilidad_updateDisponibilidad() throws Exception {
+        void NO_CONTENT_CuandoActualizaLaDisponibilidad_updateDisponibilidad() throws Exception {
                 // Arreglar
                 Disponibilidad disponibilidad = fabric.createDisponibilidad(
                                 null, null, null);
@@ -68,12 +68,12 @@ public class DisponibilidadControllerTest {
                                 .send();
 
                 // Afirmar
-                assertEquals(HttpStatus.OK, response.status());
+                assertEquals(HttpStatus.NO_CONTENT, response.status());
         }
 
         // * DELETE -> ?cursoId={}&docenteId={}
         @Test
-        void OK_CuandoEliminaLaDisponibilidad_deleteDisponibilidad() throws Exception {
+        void NO_CONTENT_CuandoEliminaLaDisponibilidad_deleteDisponibilidad() throws Exception {
                 // Arreglar
                 Disponibilidad disponibilidad = fabric.createDisponibilidad(
                                 null, null, null);
@@ -85,7 +85,7 @@ public class DisponibilidadControllerTest {
                                 .send();
 
                 // Afirmar
-                assertEquals(HttpStatus.OK, response.status());
+                assertEquals(HttpStatus.NO_CONTENT, response.status());
         }
 
         // * GET -> ?cursoId={}&docenteId={}

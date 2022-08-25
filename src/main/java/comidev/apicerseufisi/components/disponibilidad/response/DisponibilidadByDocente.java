@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class DisponibilidadListByDocente {
+public class DisponibilidadByDocente {
     private Long id;
     private CursoDetails curso;
 
-    public DisponibilidadListByDocente(Disponibilidad disponibilidad) {
+    public DisponibilidadByDocente(Disponibilidad disponibilidad) {
         this.id = disponibilidad.getId();
         this.curso = new CursoDetails(disponibilidad.getCurso());
     }

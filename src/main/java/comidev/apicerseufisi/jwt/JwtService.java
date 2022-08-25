@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 @Service
 public class JwtService {
     private static final String SECRET = "apicerseufisi";
-    private static final String EXPIRES_IN_SECOND = "1800";
+    private static final long EXPIRES_IN_SECOND = 1800;
     private static final String BEARER = "Bearer ";
     private static final String ISSUER = "apicerseufisi";
 
@@ -24,14 +24,16 @@ public class JwtService {
         return new Tokens(accessToken, resfreshToken);
     }
 
-    private String createToken(Payload payload, long addExpiresInSecond) {
-        long expiresAtMilliSecond = (Long.parseLong(EXPIRES_IN_SECOND) + addExpiresInSecond) * 1000;
+    private String createToken(Payload payload, long addInSecond) {
+        long expiresAtMilliSecond = EXPIRES_IN_SECOND + (addInSecond * 1000);
+        Date expires = new Date(System.currentTimeMillis() + expiresAtMilliSecond);
+        Date date = new Date();
 
         return JWT.create()
                 .withIssuer(ISSUER) // empresa
-                .withIssuedAt(new Date()) // fecha de creación
-                .withNotBefore(new Date()) // valido desde
-                .withExpiresAt(new Date(System.currentTimeMillis() + expiresAtMilliSecond))
+                .withIssuedAt(date) // fecha de creación
+                .withNotBefore(date) // valido desde
+                .withExpiresAt(expires)
                 .withClaim("payload", payload.toMap())
                 .sign(Algorithm.HMAC256(SECRET));
     }

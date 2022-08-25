@@ -13,7 +13,7 @@ import comidev.apicerseufisi.components.disponibilidad.request.DisponibilidadCre
 import comidev.apicerseufisi.components.disponibilidad.request.DisponibilidadUpdate;
 import comidev.apicerseufisi.components.disponibilidad.response.DisponibilidadDetails;
 import comidev.apicerseufisi.components.disponibilidad.response.DisponibilidadListAll;
-import comidev.apicerseufisi.components.disponibilidad.response.DisponibilidadListByDocente;
+import comidev.apicerseufisi.components.disponibilidad.response.DisponibilidadByDocente;
 import comidev.apicerseufisi.components.docente.Docente;
 import comidev.apicerseufisi.components.docente.DocenteService;
 import comidev.apicerseufisi.components.fecha.Fecha;
@@ -44,6 +44,12 @@ public class DisponibilidadService {
         // * Validamos Docente y Curso
         Curso cursoDB = cursoService.findById(disponibilidadCreate.getCursoId());
         Docente docenteDB = docenteService.findById(disponibilidadCreate.getDocenteId());
+
+        if (disponibilidadRepo.existsByDocenteAndCurso(docenteDB, cursoDB)) {
+            String message = "El Disponibilidad con (docenteId,cursoI) nya existe!";
+            throw new HttpException(HttpStatus.CONFLICT, message);
+        }
+
         // * Creamos las Fechas
         List<Fecha> fechasNEW = disponibilidadCreate.getFechas().stream()
                 .map(Fecha::new)
@@ -67,13 +73,14 @@ public class DisponibilidadService {
         disponibilidadRepo.deleteById(id);
     }
 
-    public DisponibilidadDetails getByDocenteAndCurso(Long docenteId, Long cursoId) {
+    public DisponibilidadDetails getDisponibilidadByDocenteAndCurso(
+        Long docenteId, Long cursoId) {
         return new DisponibilidadDetails(findByDocenteAndCurso(docenteId, cursoId));
     }
 
-    public List<DisponibilidadListByDocente> getByDocente(Long docenteId) {
+    public List<DisponibilidadByDocente> getDisponibilidadByDocente(Long docenteId) {
         return disponibilidadRepo.findByDocente(new Docente(docenteId)).stream()
-                .map(DisponibilidadListByDocente::new)
+                .map(DisponibilidadByDocente::new)
                 .collect(Collectors.toList());
     }
 

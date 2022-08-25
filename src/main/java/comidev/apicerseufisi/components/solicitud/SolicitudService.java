@@ -25,13 +25,13 @@ public class SolicitudService {
         return solicitudRepo.save(new Solicitud(alumnoDB, solicitud.getCodigo()));
     }
 
-    public List<SolicitudList> getAll() {
+    public List<SolicitudList> getAllSolicitudes() {
         return solicitudRepo.findAll().stream()
                 .map(SolicitudList::new)
                 .collect(Collectors.toList());
     }
 
-    public List<SolicitudByAlumno> getAllByAlumno(Long alumnoId) {
+    public List<SolicitudByAlumno> getAllSolicitudesByAlumno(Long alumnoId) {
         return this.findSolicitudAllByAlumno(alumnoId).stream()
                 .map(SolicitudByAlumno::new)
                 .collect(Collectors.toList());

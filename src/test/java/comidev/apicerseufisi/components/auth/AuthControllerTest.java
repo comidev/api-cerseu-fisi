@@ -85,7 +85,7 @@ public class AuthControllerTest {
 
     // * GET -> /confirmar
     @Test
-    void OK_CuandoConfirmaYActivaAlUsuario_confirmToken() throws Exception {
+    void NO_CONTENT_CuandoConfirmaYActivaAlUsuario_confirmToken() throws Exception {
         // Arreglar
         String token = fabric.uuid();
         fabric.createToken(token, null);
@@ -96,7 +96,7 @@ public class AuthControllerTest {
                 .send();
 
         // Afirmar
-        assertEquals(HttpStatus.OK, res.status());
+        assertEquals(HttpStatus.NO_CONTENT, res.status());
     }
 
     @Test
